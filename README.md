@@ -119,10 +119,11 @@ script: ./dist/index.js
 
 **Decke** mit einem beliebigen Stein aus dem Inventar Zahlen ab, deren Summe **@2** beträgt. Geprüft wird jeder Stein einzeln.
 
+</div>
+
 @4
 [[!]]
 <script modify="false">window.LiaPentomino?.checkQuiz?.('pentomino-dock-quiz-@0') === true</script>
-</div>
 @end
 
 @PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`)
@@ -141,11 +142,11 @@ script: ./dist/index.js
 
 <div class="lia-pentomino-quiz-task">
 <span id="pentomino-quiz-@0" class="lia-pentomino-quiz" data-board-id="@1" data-target-sum="@2" data-piece-marker-id="pentomino-config-@0" hidden aria-hidden="true"></span>
+</div>
 
 @4
 [[!]]
 <script modify="false">window.LiaPentomino?.checkQuiz?.('pentomino-quiz-@0') === true</script>
-</div>
 @end
 -->
 
@@ -428,7 +429,7 @@ name=U5-01;type=U5;numbers=[15,17,25,26,27]
 name=X5-01;type=X5;numbers=[59,68,69,70,79]
 ```
 
-## `@PentominoDockQuiz(targetSum[, quizOptions])`
+## `@PentominoDockQuiz(targetSum, quizOptions)`
 
           --{{0}}--
 
@@ -453,7 +454,7 @@ Inventarstein die Zielsumme erreicht.
 Mehrere Steine dürfen gleichzeitig auf dem Feld liegen. Sie werden einzeln
 geprüft; ihre Summen werden nicht miteinander addiert. Vorgegebene Steine aus
 `@PentominoIn` sowie Steine aus einem anderen Dock zählen nicht. Über den
-optionalen Parameter `quizOptions` lassen sich native LiaScript-Quizoptionen
+Parameter `quizOptions` lassen sich native LiaScript-Quizoptionen
 weiterreichen. Für diese räumlich offene Aufgabe empfiehlt sich wie im Beispiel
 `<!-- data-solution-button="off" -->`, weil es keine einzelne darstellbare
 Musterlage gibt.
@@ -461,26 +462,26 @@ Musterlage gibt.
 Mit `@PentominoDockQuizAuswahl` wird das Inventar eingeschränkt:
 
 ``` markdown
-@PentominoDockQuizAuswahl(65,`I2,L3,O4,T5`)
+@PentominoDockQuizAuswahl(65,`I2,L3,O4,T5`,`<!-- data-solution-button="off" -->`)
 ```
 
 Für ein bereits vorhandenes, eindeutig benanntes `lia-coordinate`-Board gibt
 es die beiden Varianten:
 
 ``` markdown
-@PentominoDockQuizIn(`mein-board`,65)
-@PentominoDockQuizAuswahlIn(`mein-board`,65,`I2,L3,O4,T5`)
+@PentominoDockQuizIn(`mein-board`,65,`<!-- data-solution-button="off" -->`)
+@PentominoDockQuizAuswahlIn(`mein-board`,65,`I2,L3,O4,T5`,`<!-- data-solution-button="off" -->`)
 ```
 
 Die vollständigen Signaturen lauten
-`@PentominoDockQuizAuswahl(targetSum, types[, quizOptions])`,
-`@PentominoDockQuizIn(boardId, targetSum[, quizOptions])` und
-`@PentominoDockQuizAuswahlIn(boardId, targetSum, types[, quizOptions])`.
+`@PentominoDockQuizAuswahl(targetSum, types, quizOptions)`,
+`@PentominoDockQuizIn(boardId, targetSum, quizOptions)` und
+`@PentominoDockQuizAuswahlIn(boardId, targetSum, types, quizOptions)`.
 Die `In`-Varianten fügen Dock und Quiz hinzu; Hunderterfeld und Board müssen
 bereits existieren. Die von `@uid` erzeugte Quizinstanz grenzt dabei genau ihr
 eigenes Dock von anderen Docks auf demselben Board ab.
 
-## `@PentominoQuiz(targetSum, spec[, quizOptions])`
+## `@PentominoQuiz(targetSum, spec, quizOptions)`
 
           --{{0}}--
 
@@ -489,10 +490,25 @@ eigenes Dock von anderen Docks auf demselben Board ab.
 LiaScript-Quiz. **Verschiebe** und drehe den Stein so, dass die bedeckten
 Zahlen zusammen `targetSum` ergeben, und wähle anschließend **Prüfen**.
 
-Der optionale dritte Parameter reicht LiaScript-Quizoptionen unverändert an
+Der dritte Parameter reicht LiaScript-Quizoptionen unverändert an
 das native Quiz weiter. Für Abdeckungsaufgaben empfiehlt sich
 `<!-- data-solution-button="off" -->`, weil es keine einzige automatisch
 darstellbare Zielposition gibt.
+
+Eine handgeschriebene Musterlösung kann direkt auf den Makroaufruf folgen.
+Der Sternblock wird dann dem intern erzeugten Quiz zugeordnet:
+
+``` markdown
+@PentominoQuiz(45,`name=Lia503-I2;type=I2;numbers=[1,2]`,`<!-- data-solution-button="off" -->`)
+***********
+Der `I2` kann die Zahlen 22 und 23 bedecken: $22+23=45$.
+***********
+```
+
+Mit `data-solution-button="off"` bleibt die Musterlösung bis zu einer
+erfolgreichen Prüfung verborgen. Soll sie über **Auflösen** erreichbar sein,
+muss der dritte Parameter auf `<!-- data-solution-button="on" -->` gesetzt
+werden.
 
 ``` markdown
 @PentominoQuiz(115,`name=T5-Quiz-01;type=T5;numbers=[6,7,8,17,27]`,`<!-- data-solution-button="off" -->`)
@@ -506,7 +522,7 @@ ebenfalls akzeptiert, wenn ihre fünf Zahlen dieselbe Zielsumme ergeben.
 
 @PentominoQuiz(115,`name=T5-Quiz-01;type=T5;numbers=[6,7,8,17,27]`,`<!-- data-solution-button="off" -->`)
 
-## `@PentominoQuizIn(boardId, targetSum, spec[, quizOptions])`
+## `@PentominoQuizIn(boardId, targetSum, spec, quizOptions)`
 
           --{{0}}--
 

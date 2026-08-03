@@ -744,17 +744,32 @@ import: ${readmeUrl}
       dockQuizCheckDefinition,
       /data-board-id="@1"[\s\S]*data-target-sum="@2"[\s\S]*data-dock-marker-id="@3"/
     );
-    assert.match(dockQuizCheckDefinition, /@4\r?\n\[\[!\]\]/);
+    assert.match(
+      dockQuizCheckDefinition,
+      /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
+    );
     assert.match(
       dockQuizCheckDefinition,
       /window\.LiaPentomino\?\.checkQuiz\?\.\('pentomino-dock-quiz-@0'\) === true/
+    );
+    assert.match(
+      dockQuizCheckDefinition,
+      /<script modify="false">[\s\S]*<\/script>\s*$/
     );
     assert.doesNotMatch(header, /data-solution-button/);
 
     const pieceQuizDefinition = macroDefinition(header, 'PentominoQuizIn_');
     assert.match(
       pieceQuizDefinition,
+      /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
+    );
+    assert.match(
+      pieceQuizDefinition,
       /window\.LiaPentomino\?\.checkQuiz\?\.\('pentomino-quiz-@0'\) === true/
+    );
+    assert.match(
+      pieceQuizDefinition,
+      /<script modify="false">[\s\S]*<\/script>\s*$/
     );
     const validatorScripts = Array.from(
       header.matchAll(/<script modify="false">([^<]+)<\/script>/g),

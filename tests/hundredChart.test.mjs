@@ -370,23 +370,34 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   );
   assert.match(
     dockQuizCheckDefinition,
-    /@4\r?\n\[\[!\]\]/
+    /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
   );
   assert.doesNotMatch(dockQuizCheckDefinition, /data-solution-button/);
   assert.match(
     dockQuizCheckDefinition,
     /window\.LiaPentomino\?\.checkQuiz\?\.\('pentomino-dock-quiz-@0'\) === true/
   );
+  assert.match(
+    dockQuizCheckDefinition,
+    /<script modify="false">[\s\S]*<\/script>\s*$/
+  );
   assert.match(header, /@PentominoQuiz: @PentominoQuiz_\(@uid,@0,`@1`,`@2`\)/);
   assert.match(
     header,
     /@PentominoQuizIn: @PentominoQuizIn_\(@uid,`@0`,@1,`@2`,`@3`\)/
   );
-  assert.match(pentominoQuizInDefinition, /\n@4\r?\n\[\[!\]\]/);
+  assert.match(
+    pentominoQuizInDefinition,
+    /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
+  );
   assert.doesNotMatch(pentominoQuizInDefinition, /data-solution-button/);
   assert.match(
     pentominoQuizInDefinition,
     /window\.LiaPentomino\?\.checkQuiz\?\.\('pentomino-quiz-@0'\) === true/
+  );
+  assert.match(
+    pentominoQuizInDefinition,
+    /<script modify="false">[\s\S]*<\/script>\s*$/
   );
   const validatorScripts = Array.from(
     header.matchAll(/<script modify="false">([^<]+)<\/script>/g),
@@ -402,6 +413,14 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(readme, /\[\[!\]\]/);
   assert.match(header, /LiaPentomino\?\.checkQuiz/);
   assert.match(readme, /data-solution-button="off"/);
+  const authoredSolutionExample = readme.match(
+    /@PentominoQuiz\(45,`name=Lia503-I2;type=I2;numbers=\[1,2\]`,`<!-- data-solution-button="off" -->`\)\r?\n(\*{3,})\r?\n([\s\S]*?)\r?\n\1/
+  );
+  assert.ok(
+    authoredSolutionExample,
+    'README documents a solution block immediately after @PentominoQuiz'
+  );
+  assert.match(authoredSolutionExample[2], /22[\s\S]*23[\s\S]*45/);
   assert.match(readme, /class="lia-pentomino-config"/);
   assert.match(readme, /data-chart-kind="negative"/);
   assert.match(
