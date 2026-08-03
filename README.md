@@ -142,8 +142,6 @@ script: ./dist/index.js
 <div class="lia-pentomino-quiz-task">
 <span id="pentomino-quiz-@0" class="lia-pentomino-quiz" data-board-id="@1" data-target-sum="@2" data-piece-marker-id="pentomino-config-@0" hidden aria-hidden="true"></span>
 
-**Verschiebe** und drehe den vorgegebenen Stein so, dass die Summe der bedeckten Zahlen **@2** beträgt.
-
 @4
 [[!]]
 <script modify="false">window.LiaPentomino?.checkQuiz?.('pentomino-quiz-@0') === true</script>
