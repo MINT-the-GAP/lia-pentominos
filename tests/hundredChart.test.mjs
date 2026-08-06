@@ -102,6 +102,7 @@ test('draws the negative chart backwards from 50 to -49', () => {
   const board = fakeBoard();
   const objects = createHundredChart(board, 'negative');
   const labels = board.calls.filter(call => call.type === 'text');
+  const mathematicalX = String.fromCodePoint(0x1d465);
 
   assert.equal(objects.length, 167);
   assert.equal(labels.length, 100);
@@ -113,6 +114,12 @@ test('draws the negative chart backwards from 50 to -49', () => {
   assert.equal(labelValue(labels[51]), '-1');
   assert.equal(labelValue(labels[90]), '-40');
   assert.equal(labelValue(labels[99]), '-49');
+
+  assert.equal(setHundredChartMaskedNumbers(objects, [1, 51, 100]), true);
+  assert.equal(labelValue(labels[0]), mathematicalX);
+  assert.equal(labelValue(labels[50]), mathematicalX);
+  assert.equal(labelValue(labels[99]), mathematicalX);
+  assert.equal(labelValue(labels[1]), '49');
 });
 
 test('masks and restores labels dynamically without repeating unchanged updates', () => {
@@ -252,12 +259,15 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(readme, /@PentominoDockIn:/);
   assert.match(readme, /@PentominoDockAuswahlIn:/);
   assert.match(readme, /@PentominoDockQuiz:/);
+  assert.match(readme, /@PentominoDockQuizN:/);
   assert.match(readme, /@PentominoDockQuizAuswahl:/);
+  assert.match(readme, /@PentominoDockQuizAuswahlN:/);
   assert.match(readme, /@PentominoDockQuizIn:/);
   assert.match(readme, /@PentominoDockQuizAuswahlIn:/);
   assert.match(readme, /@PentominoIn:/);
   assert.match(readme, /@PentominosIn:/);
   assert.match(readme, /@PentominoQuiz:/);
+  assert.match(readme, /@PentominoQuizN:/);
   assert.match(readme, /@PentominoQuizIn:/);
   const header = readme.match(/^<!--([\s\S]*?)-->/)?.[1] || '';
   assert.match(header, /@PentominoDock: @PentominoDock_\(@uid,`all`\)/);
@@ -275,11 +285,19 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   );
   assert.match(
     header,
-    /@PentominoDockQuiz: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`\)/
+    /@PentominoDockQuiz: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`,`standard`\)/
   );
   assert.match(
     header,
-    /@PentominoDockQuizAuswahl: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`\)/
+    /@PentominoDockQuizN: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`,`negative`\)/
+  );
+  assert.match(
+    header,
+    /@PentominoDockQuizAuswahl: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`,`standard`\)/
+  );
+  assert.match(
+    header,
+    /@PentominoDockQuizAuswahlN: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
   );
   assert.match(
     header,
@@ -314,6 +332,12 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   const dockQuizCheckDefinition = header.match(
     /(?:^|\n)@PentominoDockQuizCheck_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
+  const hundredChartInDefinition = header.match(
+    /(?:^|\n)@HunderterfeldIn_\r?\n([\s\S]*?)\r?\n@end/
+  )?.[1] || '';
+  const pentominoQuizDefinition = header.match(
+    /(?:^|\n)@PentominoQuiz_\r?\n([\s\S]*?)\r?\n@end/
+  )?.[1] || '';
   const pentominoQuizInDefinition = header.match(
     /(?:^|\n)@PentominoQuizIn_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
@@ -327,6 +351,7 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(header, /@PentominoBoard_\(pentomino-dock-board-@0\)/);
   assert.match(header, /@PentominoBoard_\(pentomino-dock-quiz-board-@0\)/);
   assert.match(header, /@PentominoBoard_\(pentomino-quiz-board-@0\)/);
+  assert.match(hundredChartInDefinition, /data-chart-kind="@2"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace-board"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace-sidebar"/);
@@ -349,6 +374,10 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(
     dockQuizDefinition,
     /@PentominoDockIn_\(@0,`pentomino-dock-quiz-board-@0`,`@2`\)/
+  );
+  assert.match(
+    dockQuizDefinition,
+    /@HunderterfeldIn_\(@0,`pentomino-dock-quiz-board-@0`,`@4`\)/
   );
   assert.match(
     dockQuizDefinition,
@@ -381,7 +410,14 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     dockQuizCheckDefinition,
     /<script modify="false">[\s\S]*<\/script>\s*$/
   );
-  assert.match(header, /@PentominoQuiz: @PentominoQuiz_\(@uid,@0,`@1`,`@2`\)/);
+  assert.match(
+    header,
+    /@PentominoQuiz: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`standard`\)/
+  );
+  assert.match(
+    header,
+    /@PentominoQuizN: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
+  );
   assert.match(
     header,
     /@PentominoQuizIn: @PentominoQuizIn_\(@uid,`@0`,@1,`@2`,`@3`\)/
@@ -398,6 +434,10 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(
     pentominoQuizInDefinition,
     /<script modify="false">[\s\S]*<\/script>\s*$/
+  );
+  assert.match(
+    pentominoQuizDefinition,
+    /@HunderterfeldIn_\(@0,`pentomino-quiz-board-@0`,`@4`\)/
   );
   const validatorScripts = Array.from(
     header.matchAll(/<script modify="false">([^<]+)<\/script>/g),
@@ -422,7 +462,10 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   );
   assert.match(authoredSolutionExample[2], /22[\s\S]*23[\s\S]*45/);
   assert.match(readme, /class="lia-pentomino-config"/);
-  assert.match(readme, /data-chart-kind="negative"/);
+  assert.match(
+    header,
+    /@HunderterfeldIn_\(@0,`pentomino-hunderterfeld-n-@0`,`negative`\)/
+  );
   assert.match(
     readme,
     /numbers=\[6,7,8,17,27=x\];fixed=true/
@@ -434,6 +477,10 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     /cdn\.jsdelivr\.net\/gh\/MINT-the-GAP\/lia-pentominos@main\/README\.md/
   );
   const body = readme.slice(readme.indexOf('-->') + 3);
+  assert.ok(body.includes(
+    '@PentominoQuizN(-35,`name=FoBi-I2;type=I2;numbers=[2,3]`,' +
+    '`<!-- data-solution-button="off" -->`)'
+  ));
   assert.match(body, /\n@PentominoDock\r?\n/);
   assert.match(
     body,
@@ -454,7 +501,9 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   const dockQuizDocs = body.slice(dockQuizDocsStart, pentominoQuizDocsStart);
   for (const macro of [
     '@PentominoDockQuiz',
+    '@PentominoDockQuizN',
     '@PentominoDockQuizAuswahl',
+    '@PentominoDockQuizAuswahlN',
     '@PentominoDockQuizIn',
     '@PentominoDockQuizAuswahlIn'
   ]) {

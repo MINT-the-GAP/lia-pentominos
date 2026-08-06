@@ -244,7 +244,7 @@ export function createHundredChart(
             column + 0.5,
             HUNDRED_CHART_SIZE - row - 0.5,
             function() {
-              return maskState.maskedNumbers.has(value)
+              return maskState.maskedNumbers.has(index + 1)
                 ? MASKED_LABEL
                 : String(value);
             }

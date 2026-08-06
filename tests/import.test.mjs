@@ -385,6 +385,8 @@ function runtimeEnvironment({
   registerBoard = true,
   movable = true,
   includeFixed = true,
+  fixedSpec =
+    'name=T5-X;type=T5;numbers=[6,7,8,17,27=x];fixed=true',
   chartKind = 'standard',
   dock = false,
   dockTypes = 'all',
@@ -414,7 +416,7 @@ function runtimeEnvironment({
     'fixed-marker',
     'lia-pentomino-config',
     boardId,
-    'name=T5-X;type=T5;numbers=[6,7,8,17,27=x];fixed=true'
+    fixedSpec
   );
   const movableMarker = marker(
     'movable-marker',
@@ -694,18 +696,29 @@ import: ${readmeUrl}
     const header = headerOf(readme);
     assert.match(header, /@PentominoIn:/);
     assert.match(header, /@PentominoQuiz:/);
+    assert.match(header, /@PentominoQuizN:/);
     assert.match(header, /@HunderterfeldN:/);
     assert.match(header, /@PentominoDock:/);
     assert.match(header, /@PentominoDockAuswahl:/);
     assert.match(header, /@PentominoDockIn:/);
     assert.match(header, /@PentominoDockAuswahlIn:/);
+    assert.match(header, /@PentominoDockQuizN:/);
+    assert.match(header, /@PentominoDockQuizAuswahlN:/);
     assert.match(
       header,
-      /@PentominoDockQuiz: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`\)/
+      /@PentominoDockQuiz: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`,`standard`\)/
     );
     assert.match(
       header,
-      /@PentominoDockQuizAuswahl: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`\)/
+      /@PentominoDockQuizN: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`,`negative`\)/
+    );
+    assert.match(
+      header,
+      /@PentominoDockQuizAuswahl: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`,`standard`\)/
+    );
+    assert.match(
+      header,
+      /@PentominoDockQuizAuswahlN: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
     );
     assert.match(
       header,
@@ -759,6 +772,10 @@ import: ${readmeUrl}
     assert.doesNotMatch(header, /data-solution-button/);
 
     const pieceQuizDefinition = macroDefinition(header, 'PentominoQuizIn_');
+    assert.match(
+      header,
+      /@PentominoQuizN: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
+    );
     assert.match(
       pieceQuizDefinition,
       /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
@@ -973,8 +990,10 @@ test('executes an imported negative hundred chart marker', async () => {
     const bundle = await (await fetch(bundleUrl)).text();
     const environment = runtimeEnvironment({
       chartKind: 'negative',
-      includeFixed: false,
-      movable: false
+      fixedSpec: 'name=FoBi-I2;type=I2;numbers=[68,69]',
+      movable: false,
+      dock: true,
+      dockTypes: '[I2]'
     });
     const context = vm.createContext(environment.sandbox);
     new vm.Script(bundle, { filename: bundleUrl }).runInContext(context, {
@@ -991,6 +1010,46 @@ test('executes an imported negative hundred chart marker', async () => {
       environment.sandbox.__pentominoHundredChartEntries['chart-marker'].chartKind,
       'negative'
     );
+
+    const { boardId, sandbox } = environment;
+    const pieceQuiz = domElement('span');
+    pieceQuiz.id = 'negative-piece-quiz';
+    pieceQuiz.className = 'lia-pentomino-quiz';
+    pieceQuiz.dataset.boardId = boardId;
+    pieceQuiz.dataset.targetSum = '-35';
+    pieceQuiz.dataset.pieceMarkerId = 'fixed-marker';
+    sandbox.document.body.appendChild(pieceQuiz);
+
+    assert.equal(sandbox.LiaPentomino.checkQuiz(pieceQuiz.id), true);
+    assert.equal(sandbox.LiaPentomino.getCoverageSum(boardId, 'FoBi-I2'), -35);
+    assert.equal(sandbox.LiaPentomino.coversSum(boardId, 'FoBi-I2', -35), true);
+    assert.equal(sandbox.LiaPentomino.coversSum(boardId, 'FoBi-I2', 137), false);
+    pieceQuiz.dataset.targetSum = '137';
+    assert.equal(sandbox.LiaPentomino.checkQuiz(pieceQuiz.id), false);
+
+    const dockEntry = sandbox.__pentominoDockEntries['dock-marker'];
+    dockEntry.pieces.push(
+      fakeRuntimePiece('I2-Dock-Negative', 'I2', [68, 69])
+    );
+    const dockQuiz = domElement('span');
+    dockQuiz.id = 'negative-dock-quiz';
+    dockQuiz.className = 'lia-pentomino-dock-quiz';
+    dockQuiz.dataset.boardId = boardId;
+    dockQuiz.dataset.targetSum = '-35';
+    dockQuiz.dataset.dockMarkerId = 'dock-marker';
+    sandbox.document.body.appendChild(dockQuiz);
+
+    assert.equal(sandbox.LiaPentomino.checkQuiz(dockQuiz.id), true);
+    assert.equal(
+      sandbox.LiaPentomino.dockCoversSum(boardId, 'dock-marker', -35),
+      true
+    );
+    assert.equal(
+      sandbox.LiaPentomino.dockCoversSum(boardId, 'dock-marker', 137),
+      false
+    );
+    dockQuiz.dataset.targetSum = '137';
+    assert.equal(sandbox.LiaPentomino.checkQuiz(dockQuiz.id), false);
   });
 });
 

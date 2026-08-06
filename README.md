@@ -20,7 +20,7 @@ script: ./dist/index.js
 @Hunderterfeld_
 @PentominoBoard_(pentomino-hunderterfeld-@0)
 
-<span id="pentomino-hundred-chart-@0" class="lia-pentomino-hundred-chart" data-board-id="pentomino-hunderterfeld-@0" hidden aria-hidden="true"></span>
+@HunderterfeldIn_(@0,`pentomino-hunderterfeld-@0`,`standard`)
 @end
 
 @HunderterfeldN: @HunderterfeldN_(@uid)
@@ -28,14 +28,14 @@ script: ./dist/index.js
 @HunderterfeldN_
 @PentominoBoard_(pentomino-hunderterfeld-n-@0)
 
-<span id="pentomino-hundred-chart-n-@0" class="lia-pentomino-hundred-chart" data-board-id="pentomino-hunderterfeld-n-@0" data-chart-kind="negative" hidden aria-hidden="true"></span>
+@HunderterfeldIn_(@0,`pentomino-hunderterfeld-n-@0`,`negative`)
 @end
 
-@HunderterfeldIn: @HunderterfeldIn_(@uid,`@0`)
-@HundredChartIn: @HunderterfeldIn_(@uid,`@0`)
+@HunderterfeldIn: @HunderterfeldIn_(@uid,`@0`,`standard`)
+@HundredChartIn: @HunderterfeldIn_(@uid,`@0`,`standard`)
 
 @HunderterfeldIn_
-<span id="pentomino-hundred-chart-@0" class="lia-pentomino-hundred-chart" data-board-id="@1" hidden aria-hidden="true"></span>
+<span id="pentomino-hundred-chart-@0" class="lia-pentomino-hundred-chart" data-board-id="@1" data-chart-kind="@2" hidden aria-hidden="true"></span>
 @end
 
 @PentominoDock: @PentominoDock_(@uid,`all`)
@@ -50,7 +50,7 @@ script: ./dist/index.js
 
 @PentominoBoard_(pentomino-dock-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-dock-board-@0`)
+@HunderterfeldIn_(@0,`pentomino-dock-board-@0`,`standard`)
 
 </div>
 
@@ -80,8 +80,10 @@ script: ./dist/index.js
 <pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="@1" hidden aria-hidden="true">@2</pre>
 @end
 
-@PentominoDockQuiz: @PentominoDockQuiz_(@uid,@0,`all`,`@1`)
-@PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`)
+@PentominoDockQuiz: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`standard`)
+@PentominoDockQuizN: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`negative`)
+@PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`standard`)
+@PentominoDockQuizAuswahlN: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`negative`)
 @PentominoDockQuizIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`all`,`@2`)
 @PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
@@ -92,7 +94,7 @@ script: ./dist/index.js
 
 @PentominoBoard_(pentomino-dock-quiz-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-dock-quiz-board-@0`)
+@HunderterfeldIn_(@0,`pentomino-dock-quiz-board-@0`,`@4`)
 
 </div>
 
@@ -126,13 +128,14 @@ script: ./dist/index.js
 <script modify="false">window.LiaPentomino?.checkQuiz?.('pentomino-dock-quiz-@0') === true</script>
 @end
 
-@PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`)
+@PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`standard`)
+@PentominoQuizN: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`negative`)
 @PentominoQuizIn: @PentominoQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
 @PentominoQuiz_
 @PentominoBoard_(pentomino-quiz-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-quiz-board-@0`)
+@HunderterfeldIn_(@0,`pentomino-quiz-board-@0`,`@4`)
 
 @PentominoQuizIn_(@0,`pentomino-quiz-board-@0`,@1,`@2`,`@3`)
 @end
@@ -459,6 +462,19 @@ weiterreichen. Für diese räumlich offene Aufgabe empfiehlt sich wie im Beispie
 `<!-- data-solution-button="off" -->`, weil es keine einzelne darstellbare
 Musterlage gibt.
 
+Mit einem angehängten `N` erzeugen die eigenständigen Dock-Quizmakros
+stattdessen das negative Hunderterfeld von $50$ bis $-49$. Geprüft wird dann
+die Summe der sichtbaren Feldwerte:
+
+``` markdown
+@PentominoDockQuizN(-35,`<!-- data-solution-button="off" -->`)
+@PentominoDockQuizAuswahlN(-35,`I2,L3,O4,T5`,`<!-- data-solution-button="off" -->`)
+```
+
+---
+
+@PentominoDockQuizN(-35,`<!-- data-solution-button="off" -->`)
+
 Mit `@PentominoDockQuizAuswahl` wird das Inventar eingeschränkt:
 
 ``` markdown
@@ -521,6 +537,23 @@ ebenfalls akzeptiert, wenn ihre fünf Zahlen dieselbe Zielsumme ergeben.
 ---
 
 @PentominoQuiz(115,`name=T5-Quiz-01;type=T5;numbers=[6,7,8,17,27]`,`<!-- data-solution-button="off" -->`)
+
+Mit `@PentominoQuizN` genügt ebenfalls das angehängte `N`, um das negative
+Hunderterfeld zu erzeugen. Die Zielsumme bezieht sich auf seine sichtbaren
+Werte; ein `I2` auf den Positionen 68 und 69 bedeckt dort $-17$ und $-18$ und
+erfüllt somit die Zielsumme $-35$:
+
+``` markdown
+@PentominoQuizN(-35,`name=FoBi-I2;type=I2;numbers=[2,3]`,`<!-- data-solution-button="off" -->`)
+```
+
+Die Einträge in `numbers` bleiben dabei die eindeutigen Feldpositionen von
+`1` bis `100`. Im Beispiel startet der Stein deshalb auf der zweiten und
+dritten Position; dort stehen im negativen Feld zunächst die Werte 49 und 48.
+
+---
+
+@PentominoQuizN(-35,`name=FoBi-I2;type=I2;numbers=[2,3]`,`<!-- data-solution-button="off" -->`)
 
 ## `@PentominoQuizIn(boardId, targetSum, spec, quizOptions)`
 
@@ -695,7 +728,9 @@ bedeckten Felder zur Zellenzahl des Typs passt, andernfalls `null`.
 `@PentominoQuiz`. `getDockPieces` filtert zusätzlich nach einer konkreten
 Inventarinstanz. `dockCoversSum` liefert genau dann `true`, wenn mindestens ein
 einzelner Stein aus diesem Dock vollständig liegt und die Zielsumme bildet;
-Summen mehrerer Steine werden nicht kombiniert.
+Summen mehrerer Steine werden nicht kombiniert. Auf einem negativen
+Hunderterfeld beziehen sich diese Summenfunktionen wie die N-Quizmakros auf die
+sichtbaren Werte von $50$ bis $-49$.
 
 Nach jedem Ablegen, Verschieben und Drehen wird das DOM-Ereignis
 `lia-pentomino-change` ausgelöst. Dessen `detail` enthält `boardId`, `name`,
@@ -879,11 +914,14 @@ script: ./dist/index.js
 @PentominoDockAuswahlIn: @PentominoDockIn_(@uid,`@0`,`@1`)
 @PentominoIn: @PentominoConfig_(@uid,`@0`,`@1`)
 @PentominosIn: @PentominoConfig_(@uid,`@0`,```@1```)
-@PentominoDockQuiz: @PentominoDockQuiz_(@uid,@0,`all`,`@1`)
-@PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`)
+@PentominoDockQuiz: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`standard`)
+@PentominoDockQuizN: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`negative`)
+@PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`standard`)
+@PentominoDockQuizAuswahlN: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`negative`)
 @PentominoDockQuizIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`all`,`@2`)
 @PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
-@PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`)
+@PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`standard`)
+@PentominoQuizN: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`negative`)
 @PentominoQuizIn: @PentominoQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
 @PentominoDockIn_

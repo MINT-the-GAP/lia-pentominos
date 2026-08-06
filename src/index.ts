@@ -682,6 +682,7 @@ function attributeMutationIsRelevant(mutation: MutationRecord): boolean {
 
   if (
     attributeName === 'data-board-id' ||
+    attributeName === 'data-chart-kind' ||
     attributeName === 'data-types' ||
     attributeName === 'id'
   ) {
@@ -738,7 +739,13 @@ function installObserver(): void {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['data-board-id', 'data-types', 'id', 'class'],
+    attributeFilter: [
+      'data-board-id',
+      'data-chart-kind',
+      'data-types',
+      'id',
+      'class'
+    ],
     attributeOldValue: true,
     characterData: true
   });
@@ -860,8 +867,32 @@ function publicState(
 function publicCoverageSum(boardId: string, name: string): number | null {
   const state = publicState(boardId, name);
   return state
-    ? hundredChartCoverageSum(state.coveredNumbers, state.cells.length)
+    ? hundredChartCoverageSum(
+      state.coveredNumbers,
+      state.cells.length,
+      publicHundredChartKind(boardId)
+    )
     : null;
+}
+
+function publicHundredChartKind(boardId: string): HundredChartKind {
+  const board = registeredBoard(boardId);
+  if (!board) return 'standard';
+
+  const entries = Object.values(hundredChartEntries()).filter(function(entry) {
+    return (
+      entry.runtimeToken === runtimeToken &&
+      entry.boardId === boardId &&
+      entry.board === board &&
+      entry.container === board.containerObj &&
+      entry.marker.isConnected &&
+      document.documentElement.contains(entry.marker) &&
+      entry.marker.matches(HUNDRED_MARKER_SELECTOR) &&
+      hundredChartIsAttached(board, entry.objects)
+    );
+  });
+
+  return entries.length === 1 ? entries[0].chartKind : 'standard';
 }
 
 function strictQuizTarget(value: string | undefined): number | null {
@@ -906,11 +937,14 @@ function publicQuizResult(quizMarkerId: string): boolean {
     return false;
   }
 
+  const chartKind = publicHundredChartKind(boardId);
+
   if (isDockQuiz) {
     return publicDockStates(boardId, dockMarkerId).some(function(state) {
       return hundredChartCoverageSum(
         state.coveredNumbers,
-        state.cells.length
+        state.cells.length,
+        chartKind
       ) === target;
     });
   }
@@ -931,7 +965,8 @@ function publicQuizResult(quizMarkerId: string): boolean {
     const state = piece.getState();
     return hundredChartCoverageSum(
       state.coveredNumbers,
-      state.cells.length
+      state.cells.length,
+      chartKind
     ) === target;
   } catch (_error) {
     return false;
@@ -969,12 +1004,14 @@ window.LiaPentomino = {
     dockMarkerId: string,
     targetSum: number
   ) {
+    const chartKind = publicHundredChartKind(boardId);
     return (
       Number.isSafeInteger(targetSum) &&
       publicDockStates(boardId, dockMarkerId).some(function(state) {
         return hundredChartCoverageSum(
           state.coveredNumbers,
-          state.cells.length
+          state.cells.length,
+          chartKind
         ) === targetSum;
       })
     );

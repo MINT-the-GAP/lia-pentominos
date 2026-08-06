@@ -206,16 +206,23 @@ test('T5 at the reference position covers 6, 7, 8, 17 and 27', () => {
   assert.equal(hundredChartCoverageSum(numbers), 65);
 });
 
-test('coverage sums support two to five cells and reject wrong lengths or values', () => {
+test('coverage sums support both chart kinds and reject wrong lengths or values', () => {
   assert.equal(hundredChartCoverageSum([6, 7], 2), 13);
   assert.equal(hundredChartCoverageSum([6, 7, 8], 3), 21);
   assert.equal(hundredChartCoverageSum([6, 7, 8, 17], 4), 38);
   assert.equal(hundredChartCoverageSum([16, 17, 18, 27, 37]), 115);
+  assert.equal(hundredChartCoverageSum([68, 69], 2, 'negative'), -35);
+  assert.equal(hundredChartCoverageSum([2, 3], 2, 'negative'), 97);
+  assert.equal(
+    hundredChartCoverageSum([6, 7, 8, 17, 27], 5, 'negative'),
+    190
+  );
   assert.equal(hundredChartCoverageSum([6, 7], 3), null);
   assert.equal(hundredChartCoverageSum([6, 7, 8], 2), null);
   assert.equal(hundredChartCoverageSum([16, 17, 18, 27]), null);
   assert.equal(hundredChartCoverageSum([16, 17, 18, 27, 101]), null);
   assert.equal(hundredChartCoverageSum([16, 17, 18, 27, 27]), null);
+  assert.equal(hundredChartCoverageSum([68], 2, 'negative'), null);
 });
 
 test('parser accepts every cell count, case-insensitive names and number permutations', () => {

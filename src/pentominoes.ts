@@ -1,4 +1,4 @@
-import type { BoardLike } from './hundredChart.ts';
+import type { BoardLike, HundredChartKind } from './hundredChart.ts';
 
 export type PentominoType =
   | 'I2'
@@ -241,7 +241,8 @@ export function coveredHundredChartNumbers(cells: Cell[]): number[] {
 
 export function hundredChartCoverageSum(
   numbers: number[],
-  expectedCount = 5
+  expectedCount = 5,
+  chartKind: HundredChartKind = 'standard'
 ): number | null {
   if (
     !Number.isSafeInteger(expectedCount) ||
@@ -267,7 +268,9 @@ export function hundredChartCoverageSum(
     sum += value;
   }
 
-  return sum;
+  return chartKind === 'negative'
+    ? 51 * expectedCount - sum
+    : sum;
 }
 
 export function parsePentominoType(rawType: string): PentominoType | null {
