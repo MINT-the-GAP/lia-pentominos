@@ -680,11 +680,22 @@ import: ${readmeUrl}
 
 # Importtest
 
+@Pentomino(\`name=T5-Test;type=T5;numbers=[6,7,8,17,27]\`)
+
+\`\`\`text
+name=I2-Test;type=I2;numbers=[1,2]
+name=L3-Test;type=L3;numbers=[11,21,22]
+\`\`\`
+@Pentominos
+
+@PentominoDock
+@PentominoDockAuswahl(\`I2,T5\`)
 @PentominoDockQuiz(65,\`<!-- data-solution-button="off" -->\`)
+@PentominoDockQuizN(-35,\`<!-- data-solution-button="off" -->\`)
 @PentominoDockQuizAuswahl(65,\`I2,T5\`,\`<!-- data-solution-button="off" -->\`)
-@PentominoDockQuizIn(\`board\`,65,\`<!-- data-solution-button="off" -->\`)
-@PentominoDockQuizAuswahlIn(\`board\`,65,\`I2,T5\`,\`<!-- data-solution-button="off" -->\`)
-@PentominoIn(\`board\`,\`name=T5-Test;type=T5;numbers=[6,7,8,17,27]\`)
+@PentominoDockQuizAuswahlN(-35,\`I2,T5\`,\`<!-- data-solution-button="off" -->\`)
+@PentominoQuiz(65,\`name=T5-Quiz;type=T5;numbers=[6,7,8,17,27]\`,\`<!-- data-solution-button="off" -->\`)
+@PentominoQuizN(-35,\`name=I2-Quiz;type=I2;numbers=[2,3]\`,\`<!-- data-solution-button="off" -->\`)
 `;
     assert.equal(valuesFor(headerOf(consumer), 'import').length, 3);
 
@@ -694,16 +705,52 @@ import: ${readmeUrl}
     assert.equal(readmeResponse.headers.get('access-control-allow-origin'), '*');
     const readme = await readmeResponse.text();
     const header = headerOf(readme);
-    assert.match(header, /@PentominoIn:/);
-    assert.match(header, /@PentominoQuiz:/);
-    assert.match(header, /@PentominoQuizN:/);
-    assert.match(header, /@HunderterfeldN:/);
-    assert.match(header, /@PentominoDock:/);
-    assert.match(header, /@PentominoDockAuswahl:/);
-    assert.match(header, /@PentominoDockIn:/);
-    assert.match(header, /@PentominoDockAuswahlIn:/);
-    assert.match(header, /@PentominoDockQuizN:/);
-    assert.match(header, /@PentominoDockQuizAuswahlN:/);
+    for (const macroName of [
+      'Pentomino',
+      'Pentominos',
+      'PentominoDock',
+      'PentominoDockAuswahl',
+      'PentominoDockQuiz',
+      'PentominoDockQuizN',
+      'PentominoDockQuizAuswahl',
+      'PentominoDockQuizAuswahlN',
+      'PentominoQuiz',
+      'PentominoQuizN'
+    ]) {
+      assert.match(
+        header,
+        new RegExp('(?:^|\\n)@' + macroName + ':'),
+        '@' + macroName + ' remains public'
+      );
+    }
+    for (const macroName of [
+      'Hunderterfeld',
+      'HundredChart',
+      'HunderterfeldN',
+      'HunderterfeldIn',
+      'HundredChartIn',
+      'PentominoDockIn',
+      'PentominoDockAuswahlIn',
+      'PentominoIn',
+      'PentominosIn',
+      'PentominoDockQuizIn',
+      'PentominoDockQuizAuswahlIn',
+      'PentominoQuizIn'
+    ]) {
+      assert.doesNotMatch(
+        header,
+        new RegExp('(?:^|\\n)@' + macroName + '\\b'),
+        '@' + macroName + ' is no longer public'
+      );
+    }
+    assert.match(
+      header,
+      /@Pentomino: @Pentomino_\(@uid,`@0`\)/
+    );
+    assert.match(
+      header,
+      /@Pentominos: @Pentomino_\(@uid,```@0```\)/
+    );
     assert.match(
       header,
       /@PentominoDockQuiz: @PentominoDockQuiz_\(@uid,@0,`all`,`@1`,`standard`\)/
@@ -720,35 +767,72 @@ import: ${readmeUrl}
       header,
       /@PentominoDockQuizAuswahlN: @PentominoDockQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
     );
-    assert.match(
+    assert.doesNotMatch(
       header,
-      /@PentominoDockQuizIn: @PentominoDockQuizIn_\(@uid,`@0`,@1,`all`,`@2`\)/
-    );
-    assert.match(
-      header,
-      /@PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_\(@uid,`@0`,@1,`@2`,`@3`\)/
+      /@(?:HunderterfeldIn_|PentominoDockIn_|PentominoDockQuizIn_|PentominoQuizIn_)\b/
     );
     assert.match(header, /data-types="@2"/);
-    const dockDefinition = header.match(
-      /(?:^|\n)@PentominoDock_\r?\n([\s\S]*?)\r?\n@end/
-    )?.[1] || '';
-    const dockInDefinition = header.match(
-      /(?:^|\n)@PentominoDockIn_\r?\n([\s\S]*?)\r?\n@end/
-    )?.[1] || '';
+    const pentominoDefinition = macroDefinition(header, 'Pentomino_');
+    const chartDefinition = macroDefinition(header, 'PentominoChart_');
+    const dockDefinition = macroDefinition(header, 'PentominoDock_');
+    const dockMarkerDefinition = macroDefinition(
+      header,
+      'PentominoDockMarker_'
+    );
+    const dockQuizDefinition = macroDefinition(header, 'PentominoDockQuiz_');
+    assert.match(
+      pentominoDefinition,
+      /@PentominoBoard_\(pentomino-board-@0\)/
+    );
+    assert.match(
+      pentominoDefinition,
+      /@PentominoChart_\(@0,`pentomino-board-@0`,`standard`\)/
+    );
+    assert.match(
+      pentominoDefinition,
+      /<pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="pentomino-board-@0" hidden aria-hidden="true">@1<\/pre>/
+    );
+    assert.doesNotMatch(pentominoDefinition, /@PentominoConfig_/);
+    assert.match(
+      chartDefinition,
+      /class="lia-pentomino-hundred-chart"[\s\S]*data-board-id="@1"[\s\S]*data-chart-kind="@2"/
+    );
     assert.match(dockDefinition, /class="lia-pentomino-workspace"/);
     assert.match(dockDefinition, /class="lia-pentomino-workspace-board"/);
     assert.match(dockDefinition, /class="lia-pentomino-workspace-sidebar"/);
-    assert.match(dockInDefinition, /<aside\b/);
-    assert.match(dockInDefinition, /class="lia-pentomino-dock"/);
-    assert.match(dockInDefinition, /data-board-id="@1"/);
-    assert.match(dockInDefinition, /data-types="@2"/);
+    assert.match(
+      dockDefinition,
+      /@PentominoChart_\(@0,`pentomino-dock-board-@0`,`standard`\)/
+    );
+    assert.match(
+      dockDefinition,
+      /@PentominoDockMarker_\(@0,`pentomino-dock-board-@0`,`@1`\)/
+    );
+    assert.match(dockMarkerDefinition, /<aside\b/);
+    assert.match(dockMarkerDefinition, /class="lia-pentomino-dock"/);
+    assert.match(dockMarkerDefinition, /data-board-id="@1"/);
+    assert.match(dockMarkerDefinition, /data-types="@2"/);
     assert.doesNotMatch(
-      dockInDefinition,
+      dockMarkerDefinition,
       /lia-pentomino-dock-(?:toggle|panel|items|placed|fix|delete|actions)/
     );
-    assert.doesNotMatch(dockInDefinition, /lia-pentomino-dock-hint/);
-    assert.doesNotMatch(dockInDefinition, /Form ins Feld ziehen oder antippen\./);
-    assert.doesNotMatch(dockInDefinition, /<button\b|<details\b|<summary\b/i);
+    assert.doesNotMatch(dockMarkerDefinition, /lia-pentomino-dock-hint/);
+    assert.doesNotMatch(
+      dockMarkerDefinition,
+      /Form ins Feld ziehen oder antippen\./
+    );
+    assert.doesNotMatch(
+      dockMarkerDefinition,
+      /<button\b|<details\b|<summary\b/i
+    );
+    assert.match(
+      dockQuizDefinition,
+      /@PentominoChart_\(@0,`pentomino-dock-quiz-board-@0`,`@4`\)/
+    );
+    assert.match(
+      dockQuizDefinition,
+      /@PentominoDockMarker_\(@0,`pentomino-dock-quiz-board-@0`,`@2`\)/
+    );
     const dockQuizCheckDefinition = macroDefinition(
       header,
       'PentominoDockQuizCheck_'
@@ -771,10 +855,25 @@ import: ${readmeUrl}
     );
     assert.doesNotMatch(header, /data-solution-button/);
 
-    const pieceQuizDefinition = macroDefinition(header, 'PentominoQuizIn_');
+    const pieceQuizWrapperDefinition = macroDefinition(
+      header,
+      'PentominoQuiz_'
+    );
+    const pieceQuizDefinition = macroDefinition(
+      header,
+      'PentominoQuizTask_'
+    );
     assert.match(
       header,
       /@PentominoQuizN: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
+    );
+    assert.match(
+      pieceQuizWrapperDefinition,
+      /@PentominoChart_\(@0,`pentomino-quiz-board-@0`,`@4`\)/
+    );
+    assert.match(
+      pieceQuizWrapperDefinition,
+      /@PentominoQuizTask_\(@0,`pentomino-quiz-board-@0`,@1,`@2`,`@3`\)/
     );
     assert.match(
       pieceQuizDefinition,

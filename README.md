@@ -1,6 +1,6 @@
 <!--
 author: MINT-the-GAP, Martin Lommatzsch
-version: 1.0.0
+version: 2.0.0
 language: de
 narrator: Deutsch Female
 edit: true
@@ -14,34 +14,23 @@ script: ./dist/index.js
 
 @PentominoBoard_: @Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=@0;achsen=0;grid=0;border=0`)
 
-@Hunderterfeld: @Hunderterfeld_(@uid)
-@HundredChart: @Hunderterfeld_(@uid)
-
-@Hunderterfeld_
-@PentominoBoard_(pentomino-hunderterfeld-@0)
-
-@HunderterfeldIn_(@0,`pentomino-hunderterfeld-@0`,`standard`)
-@end
-
-@HunderterfeldN: @HunderterfeldN_(@uid)
-
-@HunderterfeldN_
-@PentominoBoard_(pentomino-hunderterfeld-n-@0)
-
-@HunderterfeldIn_(@0,`pentomino-hunderterfeld-n-@0`,`negative`)
-@end
-
-@HunderterfeldIn: @HunderterfeldIn_(@uid,`@0`,`standard`)
-@HundredChartIn: @HunderterfeldIn_(@uid,`@0`,`standard`)
-
-@HunderterfeldIn_
+@PentominoChart_
 <span id="pentomino-hundred-chart-@0" class="lia-pentomino-hundred-chart" data-board-id="@1" data-chart-kind="@2" hidden aria-hidden="true"></span>
+@end
+
+@Pentomino: @Pentomino_(@uid,`@0`)
+@Pentominos: @Pentomino_(@uid,```@0```)
+
+@Pentomino_
+@PentominoBoard_(pentomino-board-@0)
+
+@PentominoChart_(@0,`pentomino-board-@0`,`standard`)
+
+<pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="pentomino-board-@0" hidden aria-hidden="true">@1</pre>
 @end
 
 @PentominoDock: @PentominoDock_(@uid,`all`)
 @PentominoDockAuswahl: @PentominoDock_(@uid,`@0`)
-@PentominoDockIn: @PentominoDockIn_(@uid,`@0`,`all`)
-@PentominoDockAuswahlIn: @PentominoDockIn_(@uid,`@0`,`@1`)
 
 @PentominoDock_
 <section class="lia-pentomino-workspace">
@@ -50,31 +39,25 @@ script: ./dist/index.js
 
 @PentominoBoard_(pentomino-dock-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-dock-board-@0`,`standard`)
+@PentominoChart_(@0,`pentomino-dock-board-@0`,`standard`)
 
 </div>
 
 <div class="lia-pentomino-workspace-sidebar">
 
-@PentominoDockIn_(@0,`pentomino-dock-board-@0`,`@1`)
+@PentominoDockMarker_(@0,`pentomino-dock-board-@0`,`@1`)
 
 </div>
 
 </section>
 @end
 
-@PentominoDockIn_
+@PentominoDockMarker_
 <lia-keep class="lia-pentomino-dock-keep">
 <aside id="pentomino-dock-@0" class="lia-pentomino-dock" data-board-id="@1" data-types="@2">
 </aside>
 </lia-keep>
 @end
-
-@PentominoIn: @PentominoConfig_(@uid,`@0`,`@1`)
-@Pentomino: @PentominoConfig_(@uid,`@0`,`@1`)
-
-@PentominosIn: @PentominoConfig_(@uid,`@0`,```@1```)
-@Pentominos: @PentominoConfig_(@uid,`@0`,```@1```)
 
 @PentominoConfig_
 <pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="@1" hidden aria-hidden="true">@2</pre>
@@ -84,8 +67,6 @@ script: ./dist/index.js
 @PentominoDockQuizN: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`negative`)
 @PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`standard`)
 @PentominoDockQuizAuswahlN: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`negative`)
-@PentominoDockQuizIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`all`,`@2`)
-@PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
 @PentominoDockQuiz_
 <section class="lia-pentomino-workspace">
@@ -94,25 +75,19 @@ script: ./dist/index.js
 
 @PentominoBoard_(pentomino-dock-quiz-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-dock-quiz-board-@0`,`@4`)
+@PentominoChart_(@0,`pentomino-dock-quiz-board-@0`,`@4`)
 
 </div>
 
 <div class="lia-pentomino-workspace-sidebar">
 
-@PentominoDockIn_(@0,`pentomino-dock-quiz-board-@0`,`@2`)
+@PentominoDockMarker_(@0,`pentomino-dock-quiz-board-@0`,`@2`)
 
 </div>
 
 </section>
 
 @PentominoDockQuizCheck_(@0,`pentomino-dock-quiz-board-@0`,@1,`pentomino-dock-@0`,`@3`)
-@end
-
-@PentominoDockQuizIn_
-@PentominoDockIn_(@0,`@1`,`@3`)
-
-@PentominoDockQuizCheck_(@0,`@1`,@2,`pentomino-dock-@0`,`@4`)
 @end
 
 @PentominoDockQuizCheck_
@@ -130,17 +105,16 @@ script: ./dist/index.js
 
 @PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`standard`)
 @PentominoQuizN: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`negative`)
-@PentominoQuizIn: @PentominoQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
 @PentominoQuiz_
 @PentominoBoard_(pentomino-quiz-board-@0)
 
-@HunderterfeldIn_(@0,`pentomino-quiz-board-@0`,`@4`)
+@PentominoChart_(@0,`pentomino-quiz-board-@0`,`@4`)
 
-@PentominoQuizIn_(@0,`pentomino-quiz-board-@0`,@1,`@2`,`@3`)
+@PentominoQuizTask_(@0,`pentomino-quiz-board-@0`,@1,`@2`,`@3`)
 @end
 
-@PentominoQuizIn_
+@PentominoQuizTask_
 @PentominoConfig_(@0,`@1`,`@3`)
 
 <div class="lia-pentomino-quiz-task">
@@ -170,7 +144,7 @@ Die Zahlen bleiben durch die leicht transparenten Füllungen sichtbar. Jeder
 Formtyp besitzt eine eigene Standardfarbe und jede konkrete Instanz intern
 einen eindeutigen Namen. Dieser Name wird auf dem Feld nicht angezeigt.
 
-Die aktuelle Fassung ist ein Proposal mit der Version `1.0.1`.
+Die aktuelle Fassung ist ein Proposal mit der Version `2.0.0`.
 
 ## Abhängigkeiten
 
@@ -212,52 +186,49 @@ Der dritte Import lädt dieses Template aus dem Repository
 `MINT-the-GAP/lia-pentominos` vom Zweig `main`. `README.md` und
 `dist/index.js` bleiben dabei gemeinsam erreichbar.
 
-## `@Hunderterfeld`
+## `@Pentomino(spec)`
 
           --{{0}}--
 
-`@Hunderterfeld` erzeugt das statische Koordinatenboard und zeichnet das
-vollständige Feld hinein. `@HundredChart` ist der englische Alias.
+`@Pentomino` erzeugt ein vollständiges Zahlenfeld und setzt genau einen
+konfigurierten Polyomino-Stein darauf. Ein separates Koordinatenboard und eine
+Board-ID sind nicht erforderlich:
 
 ``` markdown
-@Hunderterfeld
+@Pentomino(`name=T5-01;type=T5;numbers=[6,7,8,17,27]`)
 ```
+
+Das folgende `T5-01` startet genau über den Zahlen `6, 7, 8, 17` und `27`.
+Die Reihenfolge der fünf Einträge in `numbers` ist beliebig. Der Stein rastet
+beim Loslassen auf ganzen Rasterkoordinaten ein und lässt sich über den kleinen
+runden `↻`-Button in 90°-Schritten drehen.
 
 ---
 
-@Hunderterfeld
+@Pentomino(`name=T5-01;type=T5;numbers=[6,7,8,17,27]`)
 
-## `@HunderterfeldN`
+## `@Pentominos`
 
           --{{0}}--
 
-`@HunderterfeldN` erzeugt ein statisches 10-mal-10-Feld mit absteigender
-Nummerierung. Links oben steht `50`, danach folgen die Zahlen zeilenweise bis
-`-49` rechts unten. Die Mitte des Feldes wechselt von `1` zu `0` und `-1`.
+`@Pentominos` liest mehrere Konfigurationszeilen aus einem Codeblock und
+erzeugt dafür ein gemeinsames Zahlenfeld. Jede nicht leere Zeile beschreibt
+eine Instanz; Namen müssen innerhalb dieses Feldes eindeutig sein.
 
-``` markdown
-@HunderterfeldN
+```` markdown
+``` text @Pentominos
+name=L5-01;type=L5;numbers=[11,21,31,41,42]
+name=U5-01;type=U5;numbers=[15,17,25,26,27]
+name=X5-01;type=X5;numbers=[59,68,69,70,79]
 ```
+````
 
 ---
 
-@HunderterfeldN
-
-Ein 10-mal-10-Feld besitzt genau 100 Zellen. Deshalb endet die lückenlose,
-inklusive Zählung ab `50` bei `-49`; die Zahl `-50` wäre bereits der 101. Wert.
-
-## `@HunderterfeldIn(boardId)`
-
-          --{{0}}--
-
-Mit `@HunderterfeldIn` kann das Feld in ein bereits benanntes
-`lia-coordinate`-Board gezeichnet werden. Dieser Aufbau wird benötigt, wenn
-anschließend Pentominos über dieselbe Board-ID ergänzt werden sollen:
-
-``` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=hunderterfeld-demo;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`hunderterfeld-demo`)
+``` text @Pentominos
+name=L5-01;type=L5;numbers=[11,21,31,41,42]
+name=U5-01;type=U5;numbers=[15,17,25,26,27]
+name=X5-01;type=X5;numbers=[59,68,69,70,79]
 ```
 
 ## `@PentominoDock`
@@ -265,8 +236,8 @@ anschließend Pentominos über dieselbe Board-ID ergänzt werden sollen:
           --{{0}}--
 
 `@PentominoDock` erzeugt ein vollständiges Hunderterfeld mit einem kompakten
-Inventar rechts daneben. Das Feld behält dabei dieselbe Größe von
-$520\,\text{px}\times520\,\text{px}$ wie `@Hunderterfeld`. Wird der
+Inventar rechts daneben. Das Feld ist
+$520\,\text{px}\times520\,\text{px}$ groß. Wird der
 verfügbare Inhaltsbereich schmal, rutscht
 das Inventar automatisch unter das Feld. Der vertikale Reiter ist genauso hoch
 wie das Hunderterfeld; sein um 180° gedrehter Schriftzug **Pentominos** läuft
@@ -323,115 +294,6 @@ explizit leere Auswahl wie `[]` werden als Konfigurationsfehler gemeldet. Der
 interne Wert `all` wählt den vollständigen Katalog und wird von
 `@PentominoDock` bereits als Vorgabe gesetzt.
 
-## `@PentominoDockIn(boardId)`
-
-          --{{0}}--
-
-`@PentominoDockIn` fügt das Inventar an seiner Aufrufstelle zu einem bereits
-benannten `lia-coordinate`-Board hinzu. So kann es bei einem eigenen Layout
-gezielt rechts, links oder unter dem Board platziert werden. Das Board muss
-dasselbe 10-mal-10-Raster wie das normale Hunderterfeld verwenden:
-
-``` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-dock-in-demo;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-dock-in-demo`)
-
-@PentominoDockIn(`pentomino-dock-in-demo`)
-```
-
----
-
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-dock-in-demo-live;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-dock-in-demo-live`)
-
-@PentominoDockIn(`pentomino-dock-in-demo-live`)
-
-## `@PentominoDockAuswahlIn(boardId, types)`
-
-          --{{0}}--
-
-Die gefilterte Variante lässt sich ebenso an ein vorhandenes Board andocken.
-Auch hier muss die Typenliste wegen der Kommata in Backticks stehen:
-
-``` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-dock-auswahl-in-demo;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-dock-auswahl-in-demo`)
-
-@PentominoDockAuswahlIn(`pentomino-dock-auswahl-in-demo`,`I2,L3,O4,T5`)
-```
-
----
-
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-dock-auswahl-in-demo-live;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-dock-auswahl-in-demo-live`)
-
-@PentominoDockAuswahlIn(`pentomino-dock-auswahl-in-demo-live`,`I2,L3,O4,T5`)
-
-Das Dock ist derzeit für die Nummerierung `1` bis `100` ausgelegt. Es sollte
-noch nicht mit `@HunderterfeldN` kombiniert werden, weil die Abdeckungs-API
-Positionen weiterhin als Zahlen des normalen Hunderterfeldes auswertet.
-
-## `@PentominoIn(boardId, spec)`
-
-          --{{0}}--
-
-`@PentominoIn` fügt genau einen Stein hinzu. Die Konfiguration verwendet
-Semikolons, passend zur Optionssyntax von `lia-coordinate`:
-
-``` markdown
-@PentominoIn(`pentomino-einzeln`,`name=T5-01;type=T5;numbers=[6,7,8,17,27]`)
-```
-
-Das folgende `T5-01` startet genau über den Zahlen `6, 7, 8, 17` und `27`.
-Die Reihenfolge der fünf Einträge in `numbers` ist dabei beliebig. Ziehe den
-Stein an einer beliebigen gefüllten Zelle. Beim Loslassen rastet er auf ganzen
-Rasterkoordinaten ein. Der kleine runde `↻`-Button neben dem Stein dreht ihn
-im Uhrzeigersinn um 90°.
-
----
-
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-einzeln;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-einzeln`)
-
-@PentominoIn(`pentomino-einzeln`,`name=T5-01;type=T5;numbers=[6,7,8,17,27]`)
-
-## `@PentominosIn(boardId)`
-
-          --{{0}}--
-
-`@PentominosIn` liest mehrere Konfigurationszeilen aus einem Codeblock. Jede
-nicht leere Zeile beschreibt eine Instanz; Namen müssen innerhalb eines Boards
-eindeutig sein.
-
-```` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-mehrere;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-mehrere`)
-
-``` text @PentominosIn(`pentomino-mehrere`)
-name=L5-01;type=L5;numbers=[11,21,31,41,42]
-name=U5-01;type=U5;numbers=[15,17,25,26,27]
-name=X5-01;type=X5;numbers=[59,68,69,70,79]
-```
-````
-
----
-
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-mehrere;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-mehrere`)
-
-``` text @PentominosIn(`pentomino-mehrere`)
-name=L5-01;type=L5;numbers=[11,21,31,41,42]
-name=U5-01;type=U5;numbers=[15,17,25,26,27]
-name=X5-01;type=X5;numbers=[59,68,69,70,79]
-```
-
 ## `@PentominoDockQuiz(targetSum, quizOptions)`
 
           --{{0}}--
@@ -455,8 +317,8 @@ Inventarstein die Zielsumme erreicht.
 @PentominoDockQuiz(65,`<!-- data-solution-button="off" -->`)
 
 Mehrere Steine dürfen gleichzeitig auf dem Feld liegen. Sie werden einzeln
-geprüft; ihre Summen werden nicht miteinander addiert. Vorgegebene Steine aus
-`@PentominoIn` sowie Steine aus einem anderen Dock zählen nicht. Über den
+geprüft; ihre Summen werden nicht miteinander addiert. Fest konfigurierte
+Steine aus anderen Standalone-Instanzen zählen nicht. Über den
 Parameter `quizOptions` lassen sich native LiaScript-Quizoptionen
 weiterreichen. Für diese räumlich offene Aufgabe empfiehlt sich wie im Beispiel
 `<!-- data-solution-button="off" -->`, weil es keine einzelne darstellbare
@@ -480,22 +342,6 @@ Mit `@PentominoDockQuizAuswahl` wird das Inventar eingeschränkt:
 ``` markdown
 @PentominoDockQuizAuswahl(65,`I2,L3,O4,T5`,`<!-- data-solution-button="off" -->`)
 ```
-
-Für ein bereits vorhandenes, eindeutig benanntes `lia-coordinate`-Board gibt
-es die beiden Varianten:
-
-``` markdown
-@PentominoDockQuizIn(`mein-board`,65,`<!-- data-solution-button="off" -->`)
-@PentominoDockQuizAuswahlIn(`mein-board`,65,`I2,L3,O4,T5`,`<!-- data-solution-button="off" -->`)
-```
-
-Die vollständigen Signaturen lauten
-`@PentominoDockQuizAuswahl(targetSum, types, quizOptions)`,
-`@PentominoDockQuizIn(boardId, targetSum, quizOptions)` und
-`@PentominoDockQuizAuswahlIn(boardId, targetSum, types, quizOptions)`.
-Die `In`-Varianten fügen Dock und Quiz hinzu; Hunderterfeld und Board müssen
-bereits existieren. Die von `@uid` erzeugte Quizinstanz grenzt dabei genau ihr
-eigenes Dock von anderen Docks auf demselben Board ab.
 
 ## `@PentominoQuiz(targetSum, spec, quizOptions)`
 
@@ -555,36 +401,12 @@ dritten Position; dort stehen im negativen Feld zunächst die Werte 49 und 48.
 
 @PentominoQuizN(-35,`name=FoBi-I2;type=I2;numbers=[2,3]`,`<!-- data-solution-button="off" -->`)
 
-## `@PentominoQuizIn(boardId, targetSum, spec, quizOptions)`
-
-          --{{0}}--
-
-`@PentominoQuizIn` ergänzt das Quiz auf einem bereits benannten
-`lia-coordinate`-Board. Die Spec muss genau einen Stein mit einem auf diesem
-Board eindeutigen `name` enthalten:
-
-``` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-quiz-in-demo;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-quiz-in-demo`)
-
-@PentominoQuizIn(`pentomino-quiz-in-demo`,120,`name=T5-QuizIn-01;type=T5;numbers=[6,7,8,17,27]`,`<!-- data-solution-button="off" -->`)
-```
-
----
-
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-quiz-in-demo;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-quiz-in-demo`)
-
-@PentominoQuizIn(`pentomino-quiz-in-demo`,120,`name=T5-QuizIn-01;type=T5;numbers=[6,7,8,17,27]`,`<!-- data-solution-button="off" -->`)
-
 Die Prüfung ist nur dann erfolgreich, wenn der Stein vollständig eingerastet
 ist und genau so viele eindeutige Zahlen des Hunderterfeldes bedeckt, wie sein
-Typ Zellen besitzt. Eine Teilabdeckung außerhalb des Feldes kann deshalb nicht versehentlich als
-richtige Teilsumme gelten. In den Beispielen ist der LiaScript-Lösungsbutton
-über `quizOptions` deaktiviert, weil die Aufgabe mehrere räumliche Lösungen
-besitzen kann.
+Typ Zellen besitzt. Eine Teilabdeckung außerhalb des Feldes kann deshalb nicht
+versehentlich als richtige Teilsumme gelten. In den Beispielen ist der
+LiaScript-Lösungsbutton über `quizOptions` deaktiviert, weil die Aufgabe
+mehrere räumliche Lösungen besitzen kann.
 
 ## Die 20 Formen
 
@@ -684,80 +506,13 @@ Dieses vollständige Beispiel setzt ein fixiertes `T5` auf die Felder
 `6, 7, 8, 17, 27`. Das Feld `27` zeigt dabei $x$ statt der Zahl. Für einen
 weiterhin beweglichen Stein wird `fixed=true` einfach weggelassen.
 
-```` markdown
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-maskiert-fixiert;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-maskiert-fixiert`)
-
-@PentominoIn(`pentomino-maskiert-fixiert`,`name=T5-X-01;type=T5;numbers=[6,7,8,17,27=x];fixed=true`)
-````
+``` markdown
+@Pentomino(`name=T5-X-01;type=T5;numbers=[6,7,8,17,27=x];fixed=true`)
+```
 
 ---
 
-@Koordinatensystem(`xmin=-0.15;xmax=10.15;ymin=-0.15;ymax=10.15;width=520;id=pentomino-maskiert-fixiert-live;achsen=0;grid=0;border=0`)
-
-@HunderterfeldIn(`pentomino-maskiert-fixiert-live`)
-
-@PentominoIn(`pentomino-maskiert-fixiert-live`,`name=T5-X-01;type=T5;numbers=[6,7,8,17,27=x];fixed=true`)
-
-## Abdeckung auslesen
-
-          --{{0}}--
-
-Das Bundle hält für spätere Aufgaben den normalisierten Zustand und die
-abgedeckten Hunderterfeldzahlen bereit:
-
-``` javascript
-window.LiaPentomino.getPiece('pentomino-einzeln', 'T5-01')
-window.LiaPentomino.getCoverage('pentomino-einzeln', 'T5-01')
-window.LiaPentomino.getCoverageSum('pentomino-einzeln', 'T5-01')
-window.LiaPentomino.coversSum('pentomino-einzeln', 'T5-01', 65)
-window.LiaPentomino.getDockPieces('mein-board', 'pentomino-dock-17')
-window.LiaPentomino.dockCoversSum('mein-board', 'pentomino-dock-17', 65)
-// Startzustand: [6, 7, 8, 17, 27]
-// Summe: 65, coversSum: true
-```
-
-Vom Dock erzeugte Instanzen werden von denselben Funktionen geliefert und
-lösen ebenfalls `lia-pentomino-change` aus. `detail.fixed` enthält weiterhin
-den aktuellen Zustand, auch wenn das Dock selbst keine Fixiertaste mehr zeigt.
-
-`getCoverageSum` liefert nur dann eine Summe, wenn die Zahl der gültig
-bedeckten Felder zur Zellenzahl des Typs passt, andernfalls `null`.
-`coversSum` verwendet dieselbe vollständige Abdeckungsprüfung wie
-`@PentominoQuiz`. `getDockPieces` filtert zusätzlich nach einer konkreten
-Inventarinstanz. `dockCoversSum` liefert genau dann `true`, wenn mindestens ein
-einzelner Stein aus diesem Dock vollständig liegt und die Zielsumme bildet;
-Summen mehrerer Steine werden nicht kombiniert. Auf einem negativen
-Hunderterfeld beziehen sich diese Summenfunktionen wie die N-Quizmakros auf die
-sichtbaren Werte von $50$ bis $-49$.
-
-Nach jedem Ablegen, Verschieben und Drehen wird das DOM-Ereignis
-`lia-pentomino-change` ausgelöst. Dessen `detail` enthält `boardId`, `name`,
-`type`, `rotation`, `fixed`, `maskedNumber`, die absoluten `cells` und
-`coveredNumbers`. Wird eine Dock-Instanz durch Zurückziehen ins Inventar oder
-mit **Entf/Delete** gelöscht, meldet `lia-pentomino-remove` ihren letzten Zustand.
-
-## Nummerierung
-
-          --{{0}}--
-
-Für die nullbasierte Zeile $r$ und Spalte $c$ gilt:
-
-$$
-\text{Zahl}=10r+c+1,
-\qquad
-(x,y)=\left(c+\frac12,\,9.5-r\right).
-$$
-
-Für `@HunderterfeldN` gilt entsprechend
-
-$$
-\text{Zahl}_N=50-(10r+c).
-$$
-
-Eine Pentomino-Zelle wird dagegen über ihre linke untere Ecke $(c,9-r)$
-gespeichert. So lässt sich die Abdeckung ohne Pixelrechnung bestimmen.
+@Pentomino(`name=T5-X-01;type=T5;numbers=[6,7,8,17,27=x];fixed=true`)
 
 ## Acht Pentomino-Abdeckaufgaben
 
@@ -859,72 +614,36 @@ Nutze das vollständige Fünfer-Pentomino-Inventar und erreiche die größte
 
 ********************************************************************************
 
-## Entwicklung
-
-          --{{0}}--
-
-Die Projektstruktur folgt den gebündelten MINT-the-GAP-Templates:
-
-``` text
-README.md
-package.json
-package-lock.json
-tsconfig.json
-src/
-  dock.ts
-  global.d.ts
-  hundredChart.ts
-  index.ts
-  pentominoes.ts
-dist/
-  index.js
-tests/
-  dock.test.mjs
-  hundredChart.test.mjs
-  import.test.mjs
-  pentominoes.test.mjs
-```
-
-Abhängigkeiten installieren, prüfen und das einzucheckende Browser-Bundle
-erzeugen:
-
-``` bash
-npm install
-npm run check
-npm run build
-npm test
-```
-
-`dist/index.js` gehört zur Distribution und wird deshalb nicht ignoriert.
 
 ## Implementation
 
           --{{0}}--
 
-Die öffentlichen Makros injizieren eine eindeutige DOM-ID über `@uid`. Der
-fachliche Instanzname steht unabhängig davon in der Konfiguration:
+Der folgende Implementationsauszug zeigt die öffentlichen Shortcuts und
+zentralen Marker. Die Makros injizieren eine eindeutige DOM-ID über `@uid`.
+Der fachliche Instanzname steht unabhängig davon in der Konfiguration:
 
 ```` markdown
 script: ./dist/index.js
 
-@HunderterfeldN: @HunderterfeldN_(@uid)
+@Pentomino: @Pentomino_(@uid,`@0`)
+@Pentominos: @Pentomino_(@uid,```@0```)
 @PentominoDock: @PentominoDock_(@uid,`all`)
 @PentominoDockAuswahl: @PentominoDock_(@uid,`@0`)
-@PentominoDockIn: @PentominoDockIn_(@uid,`@0`,`all`)
-@PentominoDockAuswahlIn: @PentominoDockIn_(@uid,`@0`,`@1`)
-@PentominoIn: @PentominoConfig_(@uid,`@0`,`@1`)
-@PentominosIn: @PentominoConfig_(@uid,`@0`,```@1```)
 @PentominoDockQuiz: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`standard`)
 @PentominoDockQuizN: @PentominoDockQuiz_(@uid,@0,`all`,`@1`,`negative`)
 @PentominoDockQuizAuswahl: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`standard`)
 @PentominoDockQuizAuswahlN: @PentominoDockQuiz_(@uid,@0,`@1`,`@2`,`negative`)
-@PentominoDockQuizIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`all`,`@2`)
-@PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 @PentominoQuiz: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`standard`)
 @PentominoQuizN: @PentominoQuiz_(@uid,@0,`@1`,`@2`,`negative`)
-@PentominoQuizIn: @PentominoQuizIn_(@uid,`@0`,@1,`@2`,`@3`)
 
-@PentominoDockIn_
+@Pentomino_
+@PentominoBoard_(pentomino-board-@0)
+@PentominoChart_(@0,`pentomino-board-@0`,`standard`)
+<pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="pentomino-board-@0" hidden aria-hidden="true">@1</pre>
+@end
+
+@PentominoDockMarker_
 <lia-keep class="lia-pentomino-dock-keep">
 <aside id="pentomino-dock-@0" class="lia-pentomino-dock" data-board-id="@1" data-types="@2"></aside>
 </lia-keep>

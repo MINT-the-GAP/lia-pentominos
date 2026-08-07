@@ -238,7 +238,7 @@ test('accepts a connected JSXGraph board inside a ShadowRoot', () => {
   assert.equal(boardIsConnected({ containerObj: container }, root), false);
 });
 
-test('README keeps the Proposal import, board flags and public chart and piece macros', async () => {
+test('README keeps the Proposal import, board flags and public standalone macros', async () => {
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
 
   assert.match(
@@ -251,37 +251,13 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   );
   assert.match(readme, /@Koordinatensystem\(`/);
   assert.match(readme, /achsen=0;grid=0;border=0/);
-  assert.match(readme, /@Hunderterfeld:/);
-  assert.match(readme, /@HunderterfeldN:/);
-  assert.match(readme, /@HunderterfeldIn:/);
-  assert.match(readme, /@PentominoDock:/);
-  assert.match(readme, /@PentominoDockAuswahl:/);
-  assert.match(readme, /@PentominoDockIn:/);
-  assert.match(readme, /@PentominoDockAuswahlIn:/);
-  assert.match(readme, /@PentominoDockQuiz:/);
-  assert.match(readme, /@PentominoDockQuizN:/);
-  assert.match(readme, /@PentominoDockQuizAuswahl:/);
-  assert.match(readme, /@PentominoDockQuizAuswahlN:/);
-  assert.match(readme, /@PentominoDockQuizIn:/);
-  assert.match(readme, /@PentominoDockQuizAuswahlIn:/);
-  assert.match(readme, /@PentominoIn:/);
-  assert.match(readme, /@PentominosIn:/);
-  assert.match(readme, /@PentominoQuiz:/);
-  assert.match(readme, /@PentominoQuizN:/);
-  assert.match(readme, /@PentominoQuizIn:/);
   const header = readme.match(/^<!--([\s\S]*?)-->/)?.[1] || '';
+  assert.match(header, /@Pentomino: @Pentomino_\(@uid,`@0`\)/);
+  assert.match(header, /@Pentominos: @Pentomino_\(@uid,```@0```\)/);
   assert.match(header, /@PentominoDock: @PentominoDock_\(@uid,`all`\)/);
   assert.match(
     header,
     /@PentominoDockAuswahl: @PentominoDock_\(@uid,`@0`\)/
-  );
-  assert.match(
-    header,
-    /@PentominoDockIn: @PentominoDockIn_\(@uid,`@0`,`all`\)/
-  );
-  assert.match(
-    header,
-    /@PentominoDockAuswahlIn: @PentominoDockIn_\(@uid,`@0`,`@1`\)/
   );
   assert.match(
     header,
@@ -301,12 +277,32 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   );
   assert.match(
     header,
-    /@PentominoDockQuizIn: @PentominoDockQuizIn_\(@uid,`@0`,@1,`all`,`@2`\)/
+    /@PentominoQuiz: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`standard`\)/
   );
   assert.match(
     header,
-    /@PentominoDockQuizAuswahlIn: @PentominoDockQuizIn_\(@uid,`@0`,@1,`@2`,`@3`\)/
+    /@PentominoQuizN: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
   );
+  for (const removedMacro of [
+    'Hunderterfeld',
+    'HundredChart',
+    'HunderterfeldN',
+    'HunderterfeldIn',
+    'HundredChartIn',
+    'PentominoDockIn',
+    'PentominoDockAuswahlIn',
+    'PentominoIn',
+    'PentominosIn',
+    'PentominoDockQuizIn',
+    'PentominoDockQuizAuswahlIn',
+    'PentominoQuizIn'
+  ]) {
+    assert.doesNotMatch(
+      header,
+      new RegExp('(?:^|\\n)@' + removedMacro + ':'),
+      '@' + removedMacro + ' must not be public'
+    );
+  }
   const headerLineCount = readme
     .slice(0, readme.indexOf('-->') + 3)
     .split(/\r?\n/)
@@ -317,79 +313,93 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   const boardShortcut = header.match(
     /(?:^|\n)@PentominoBoard_:\s+([^\r\n]+)/
   )?.[1] || '';
+  const pentominoDefinition = header.match(
+    /(?:^|\n)@Pentomino_\r?\n([\s\S]*?)\r?\n@end/
+  )?.[1] || '';
   const dockDefinition = header.match(
     /(?:^|\n)@PentominoDock_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
-  const dockInDefinition = header.match(
-    /(?:^|\n)@PentominoDockIn_\r?\n([\s\S]*?)\r?\n@end/
+  const dockMarkerDefinition = header.match(
+    /(?:^|\n)@PentominoDockMarker_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
   const dockQuizDefinition = header.match(
     /(?:^|\n)@PentominoDockQuiz_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
-  const dockQuizInDefinition = header.match(
-    /(?:^|\n)@PentominoDockQuizIn_\r?\n([\s\S]*?)\r?\n@end/
-  )?.[1] || '';
   const dockQuizCheckDefinition = header.match(
     /(?:^|\n)@PentominoDockQuizCheck_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
-  const hundredChartInDefinition = header.match(
-    /(?:^|\n)@HunderterfeldIn_\r?\n([\s\S]*?)\r?\n@end/
+  const chartDefinition = header.match(
+    /(?:^|\n)@PentominoChart_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
   const pentominoQuizDefinition = header.match(
     /(?:^|\n)@PentominoQuiz_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
-  const pentominoQuizInDefinition = header.match(
-    /(?:^|\n)@PentominoQuizIn_\r?\n([\s\S]*?)\r?\n@end/
+  const pentominoQuizTaskDefinition = header.match(
+    /(?:^|\n)@PentominoQuizTask_\r?\n([\s\S]*?)\r?\n@end/
   )?.[1] || '';
   assert.match(boardShortcut, /@Koordinatensystem\(`/);
   assert.match(
     boardShortcut,
     /width=520;id=@0;achsen=0;grid=0;border=0/
   );
-  assert.match(header, /@PentominoBoard_\(pentomino-hunderterfeld-@0\)/);
-  assert.match(header, /@PentominoBoard_\(pentomino-hunderterfeld-n-@0\)/);
+  assert.match(
+    pentominoDefinition,
+    /@PentominoBoard_\(pentomino-board-@0\)/
+  );
+  assert.match(
+    pentominoDefinition,
+    /@PentominoChart_\(@0,`pentomino-board-@0`,`standard`\)/
+  );
+  assert.match(
+    pentominoDefinition,
+    /<pre id="pentomino-config-@0" class="lia-pentomino-config" data-board-id="pentomino-board-@0" hidden aria-hidden="true">@1<\/pre>/
+  );
+  assert.doesNotMatch(pentominoDefinition, /@PentominoConfig_/);
   assert.match(header, /@PentominoBoard_\(pentomino-dock-board-@0\)/);
   assert.match(header, /@PentominoBoard_\(pentomino-dock-quiz-board-@0\)/);
   assert.match(header, /@PentominoBoard_\(pentomino-quiz-board-@0\)/);
-  assert.match(hundredChartInDefinition, /data-chart-kind="@2"/);
+  assert.match(chartDefinition, /data-chart-kind="@2"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace-board"/);
   assert.match(dockDefinition, /class="lia-pentomino-workspace-sidebar"/);
-  assert.match(dockInDefinition, /<aside\b/);
-  assert.match(dockInDefinition, /class="lia-pentomino-dock"/);
-  assert.match(dockInDefinition, /data-types="@2"/);
+  assert.match(
+    dockDefinition,
+    /@PentominoChart_\(@0,`pentomino-dock-board-@0`,`standard`\)/
+  );
+  assert.match(
+    dockDefinition,
+    /@PentominoDockMarker_\(@0,`pentomino-dock-board-@0`,`@1`\)/
+  );
+  assert.match(dockMarkerDefinition, /<aside\b/);
+  assert.match(dockMarkerDefinition, /class="lia-pentomino-dock"/);
+  assert.match(dockMarkerDefinition, /data-types="@2"/);
   assert.doesNotMatch(
-    dockInDefinition,
+    dockMarkerDefinition,
     /lia-pentomino-dock-(?:toggle|panel|items|placed|fix|delete|actions)/
   );
-  assert.doesNotMatch(dockInDefinition, /lia-pentomino-dock-hint/);
-  assert.doesNotMatch(dockInDefinition, /Form ins Feld ziehen oder antippen\./);
-  assert.doesNotMatch(dockInDefinition, /<button\b/i);
-  assert.doesNotMatch(dockInDefinition, /<details\b/i);
-  assert.doesNotMatch(dockInDefinition, /<summary\b/i);
+  assert.doesNotMatch(dockMarkerDefinition, /lia-pentomino-dock-hint/);
+  assert.doesNotMatch(
+    dockMarkerDefinition,
+    /Form ins Feld ziehen oder antippen\./
+  );
+  assert.doesNotMatch(dockMarkerDefinition, /<button\b/i);
+  assert.doesNotMatch(dockMarkerDefinition, /<details\b/i);
+  assert.doesNotMatch(dockMarkerDefinition, /<summary\b/i);
   assert.match(
     dockQuizDefinition,
     /@PentominoBoard_\(pentomino-dock-quiz-board-@0\)/
   );
   assert.match(
     dockQuizDefinition,
-    /@PentominoDockIn_\(@0,`pentomino-dock-quiz-board-@0`,`@2`\)/
+    /@PentominoDockMarker_\(@0,`pentomino-dock-quiz-board-@0`,`@2`\)/
   );
   assert.match(
     dockQuizDefinition,
-    /@HunderterfeldIn_\(@0,`pentomino-dock-quiz-board-@0`,`@4`\)/
+    /@PentominoChart_\(@0,`pentomino-dock-quiz-board-@0`,`@4`\)/
   );
   assert.match(
     dockQuizDefinition,
     /@PentominoDockQuizCheck_\(@0,`pentomino-dock-quiz-board-@0`,@1,`pentomino-dock-@0`,`@3`\)/
-  );
-  assert.match(
-    dockQuizInDefinition,
-    /@PentominoDockIn_\(@0,`@1`,`@3`\)/
-  );
-  assert.match(
-    dockQuizInDefinition,
-    /@PentominoDockQuizCheck_\(@0,`@1`,@2,`pentomino-dock-@0`,`@4`\)/
   );
   assert.match(dockQuizCheckDefinition, /data-board-id="@1"/);
   assert.match(dockQuizCheckDefinition, /data-target-sum="@2"/);
@@ -411,33 +421,29 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     /<script modify="false">[\s\S]*<\/script>\s*$/
   );
   assert.match(
-    header,
-    /@PentominoQuiz: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`standard`\)/
-  );
-  assert.match(
-    header,
-    /@PentominoQuizN: @PentominoQuiz_\(@uid,@0,`@1`,`@2`,`negative`\)/
-  );
-  assert.match(
-    header,
-    /@PentominoQuizIn: @PentominoQuizIn_\(@uid,`@0`,@1,`@2`,`@3`\)/
-  );
-  assert.match(
-    pentominoQuizInDefinition,
+    pentominoQuizTaskDefinition,
     /<\/div>\r?\n\r?\n@4\r?\n\[\[!\]\]/
   );
-  assert.doesNotMatch(pentominoQuizInDefinition, /data-solution-button/);
+  assert.doesNotMatch(pentominoQuizTaskDefinition, /data-solution-button/);
   assert.match(
-    pentominoQuizInDefinition,
+    pentominoQuizTaskDefinition,
     /window\.LiaPentomino\?\.checkQuiz\?\.\('pentomino-quiz-@0'\) === true/
   );
   assert.match(
-    pentominoQuizInDefinition,
+    pentominoQuizTaskDefinition,
     /<script modify="false">[\s\S]*<\/script>\s*$/
   );
   assert.match(
     pentominoQuizDefinition,
-    /@HunderterfeldIn_\(@0,`pentomino-quiz-board-@0`,`@4`\)/
+    /@PentominoChart_\(@0,`pentomino-quiz-board-@0`,`@4`\)/
+  );
+  assert.match(
+    pentominoQuizDefinition,
+    /@PentominoQuizTask_\(@0,`pentomino-quiz-board-@0`,@1,`@2`,`@3`\)/
+  );
+  assert.doesNotMatch(
+    header,
+    /@(HunderterfeldIn_|PentominoDockIn_|PentominoDockQuizIn_|PentominoQuizIn_)\b/
   );
   const validatorScripts = Array.from(
     header.matchAll(/<script modify="false">([^<]+)<\/script>/g),
@@ -463,14 +469,13 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   assert.match(authoredSolutionExample[2], /22[\s\S]*23[\s\S]*45/);
   assert.match(readme, /class="lia-pentomino-config"/);
   assert.match(
-    header,
-    /@HunderterfeldIn_\(@0,`pentomino-hunderterfeld-n-@0`,`negative`\)/
-  );
-  assert.match(
     readme,
     /numbers=\[6,7,8,17,27=x\];fixed=true/
   );
-  assert.match(readme, /id=pentomino-maskiert-fixiert-live/);
+  assert.match(
+    readme,
+    /@Pentomino\(`name=T5-X-01;type=T5;numbers=\[6,7,8,17,27=x\];fixed=true`\)/
+  );
   assert.match(readme, /script:\s+\.\/dist\/index\.js/);
   assert.match(
     readme,
@@ -486,8 +491,12 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     body,
     /@PentominoDockAuswahl\(`[^`]*I2[^`]*L3[^`]*O4[^`]*T5[^`]*`\)/
   );
-  assert.match(body, /@PentominoDockIn\(`pentomino-dock-in-demo-live`\)/);
-  assert.match(body, /@PentominoDockAuswahlIn\(/);
+  assert.match(body, /^@Pentomino\(`[^`]+`\)$/m);
+  assert.match(body, /^``` text @Pentominos\s*$/m);
+  assert.doesNotMatch(
+    body,
+    /@(Hunderterfeld|HundredChart|HunderterfeldN|HunderterfeldIn|HundredChartIn|PentominoDockIn|PentominoDockAuswahlIn|PentominoIn|PentominosIn|PentominoDockQuizIn|PentominoDockQuizAuswahlIn|PentominoQuizIn)\b/
+  );
   const dockQuizDocsStart = body.search(/## `@PentominoDockQuiz\(/);
   const pentominoQuizDocsStart = body.indexOf(
     '## `@PentominoQuiz(',
@@ -503,9 +512,7 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     '@PentominoDockQuiz',
     '@PentominoDockQuizN',
     '@PentominoDockQuizAuswahl',
-    '@PentominoDockQuizAuswahlN',
-    '@PentominoDockQuizIn',
-    '@PentominoDockQuizAuswahlIn'
+    '@PentominoDockQuizAuswahlN'
   ]) {
     assert.match(dockQuizDocs, new RegExp(macro));
   }
@@ -522,13 +529,16 @@ test('README keeps the Proposal import, board flags and public chart and piece m
     dockQuizDocs,
     /(?:nicht[\s\S]{0,80}(?:addiert|zusammengerechnet)|keine\s+Gesamtsumme)/i
   );
-  assert.match(dockQuizDocs, /(?:genau\s+diesem|zugehörigen|eigenes)\s+Dock/i);
   assert.match(
     dockQuizDocs,
-    /(?:Konfigurationsstein|vorgegebene[\s\S]{0,30}Steine|@PentominoIn)[\s\S]{0,100}(?:nicht|ignoriert)/i
+    /(?:zugehörigen|eigenes)\s+Dock|anderen\s+Standalone-Instanzen/i
   );
-  assert.match(body, /LiaPentomino\.getDockPieces/);
-  assert.match(body, /LiaPentomino\.dockCoversSum/);
+  assert.match(
+    dockQuizDocs,
+    /(?:Konfigurationsstein|konfigurierte\s+Steine|vorgegebene[\s\S]{0,30}Steine|@Pentomino)[\s\S]{0,100}(?:nicht|ignoriert)/i
+  );
+  assert.match(body, /(?:LiaPentomino|api)\.getDockPieces/);
+  assert.match(body, /(?:LiaPentomino|api)\.dockCoversSum/);
   assert.match(body, /Reiter ist genauso hoch\s+wie das Hunderterfeld/);
   assert.match(body, /um 180° gedrehter Schriftzug/);
   assert.match(body, /4×5-Raster/);
@@ -554,10 +564,10 @@ test('README keeps the Proposal import, board flags and public chart and piece m
   const packageLock = JSON.parse(
     await readFile(new URL('../package-lock.json', import.meta.url), 'utf8')
   );
-  assert.equal(packageJson.version, '1.0.1');
-  assert.equal(packageLock.version, '1.0.1');
-  assert.equal(packageLock.packages[''].version, '1.0.1');
-  assert.match(header, /version: 1\.0\.0/);
+  assert.equal(packageJson.version, '2.0.0');
+  assert.equal(packageLock.version, '2.0.0');
+  assert.equal(packageLock.packages[''].version, '2.0.0');
+  assert.match(header, /version: 2\.0\.0/);
 });
 
 test('README presents eight pentomino covering quizzes on one additional slide', async () => {
@@ -595,7 +605,10 @@ test('README presents eight pentomino covering quizzes on one additional slide',
   assert.deepEqual(configuredCalls.map(call => call.target), [65, 143, 164, 225]);
   assert.deepEqual(dockCalls.map(call => call.target), [164, 115, 245, 490]);
   assert.doesNotMatch(slide, /^\s*(?:\[\[|\[\(|\[->)/gm);
-  assert.doesNotMatch(slide, /@HunderterfeldN|@Koordinatensystem|@PentominoIn\(/);
+  assert.doesNotMatch(
+    slide,
+    /@Hunderterfeld|@HundredChart|@Koordinatensystem|@PentominoIn\(/
+  );
 
   const pentominoTypes = [
     'F5', 'I5', 'L5', 'P5', 'N5', 'T5',
