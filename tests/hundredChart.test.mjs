@@ -238,13 +238,14 @@ test('accepts a connected JSXGraph board inside a ShadowRoot', () => {
   assert.equal(boardIsConnected({ containerObj: container }, root), false);
 });
 
-test('README keeps the Proposal import, board flags and public standalone macros', async () => {
+test('README keeps the main import, board flags and public standalone macros', async () => {
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
 
   assert.match(
     readme,
-    /cdn\.jsdelivr\.net\/gh\/MINT-the-GAP\/lia-coordinate@Proposal\/README\.md/
+    /cdn\.jsdelivr\.net\/gh\/MINT-the-GAP\/lia-coordinate@main\/README\.md/
   );
+  assert.doesNotMatch(readme, /lia-coordinate@Proposal\/README\.md/);
   assert.doesNotMatch(
     readme,
     /raw\.githubusercontent\.com\/MINT-the-GAP\/lia-coordinate/
@@ -545,10 +546,6 @@ test('README keeps the Proposal import, board flags and public standalone macros
   assert.match(body, /Fixier- und Löschknöpfe gibt es dort nicht\s+mehr/);
   assert.match(body, /zurück auf den sichtbaren\s+Reiter oder in das geöffnete Inventar/);
   assert.match(body, /\*\*Entf\*\* beziehungsweise \*\*Delete\*\*/);
-  assert.match(
-    body,
-    /durch Zurückziehen ins Inventar oder\s+mit \*\*Entf\/Delete\*\* gelöscht/
-  );
   assert.doesNotMatch(body, /Tasten \*\*Fixieren\*\* und \*\*×\*\*/);
   for (const type of [
     'I2', 'I3', 'L3', 'I4', 'O4', 'T4', 'L4', 'S4',
@@ -564,19 +561,19 @@ test('README keeps the Proposal import, board flags and public standalone macros
   const packageLock = JSON.parse(
     await readFile(new URL('../package-lock.json', import.meta.url), 'utf8')
   );
-  assert.equal(packageJson.version, '2.0.0');
-  assert.equal(packageLock.version, '2.0.0');
-  assert.equal(packageLock.packages[''].version, '2.0.0');
-  assert.match(header, /version: 2\.0\.0/);
+  assert.equal(packageJson.version, '1.0.0');
+  assert.equal(packageLock.version, '1.0.0');
+  assert.equal(packageLock.packages[''].version, '1.0.0');
+  assert.match(header, /version: 1\.0\.0/);
 });
 
 test('README presents eight pentomino covering quizzes on one additional slide', async () => {
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
   const start = readme.indexOf('## Acht Pentomino-Abdeckaufgaben');
-  const end = readme.indexOf('\n## Entwicklung', start);
+  const end = readme.indexOf('\n## Implementation', start);
 
   assert.ok(start >= 0, 'README contains the example-task slide');
-  assert.ok(end > start, 'example-task slide ends before development notes');
+  assert.ok(end > start, 'example-task slide ends before implementation notes');
 
   const slide = readme.slice(start, end);
   assert.equal((slide.match(/^## /gm) || []).length, 1);

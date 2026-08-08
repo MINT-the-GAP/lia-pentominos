@@ -674,7 +674,7 @@ test('serves the template like jsDelivr and resolves its relative bundle', async
   await withDistributionServer(async ({ origin, readmeUrl }) => {
     const consumer = `<!--
 import: https://cdn.jsdelivr.net/gh/LiaTemplates/JSXGraph@main/README.md
-import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@Proposal/README.md
+import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@main/README.md
 import: ${readmeUrl}
 -->
 

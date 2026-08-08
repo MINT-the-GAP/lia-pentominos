@@ -1,6 +1,6 @@
 <!--
 author: MINT-the-GAP, Martin Lommatzsch
-version: 2.0.0
+version: 1.0.0
 language: de
 narrator: Deutsch Female
 edit: true
@@ -8,7 +8,7 @@ comment: Interaktives Hunderterfeld mit ziehbaren, drehbaren und fixierbaren Pol
 tags: Mathematik, Polyomino, Pentomino, Geometrie, Quiz
 
 import: https://cdn.jsdelivr.net/gh/LiaTemplates/JSXGraph@main/README.md
-import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@Proposal/README.md
+import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@main/README.md
 
 script: ./dist/index.js
 
@@ -144,22 +144,22 @@ Die Zahlen bleiben durch die leicht transparenten Füllungen sichtbar. Jeder
 Formtyp besitzt eine eigene Standardfarbe und jede konkrete Instanz intern
 einen eindeutigen Namen. Dieser Name wird auf dem Feld nicht angezeigt.
 
-Die aktuelle Fassung ist ein Proposal mit der Version `2.0.0`.
+Die aktuelle Fassung ist ein Proposal mit der Version `1.0.0`.
 
 ## Abhängigkeiten
 
           --{{0}}--
 
-Der Dokumentkopf lädt bewusst den Entwicklungszweig `Proposal` von
+Der Dokumentkopf lädt den jeweils aktuellen Stand des Zweigs `main` von
 `lia-coordinate`:
 
 ``` markdown
 import: https://cdn.jsdelivr.net/gh/LiaTemplates/JSXGraph@main/README.md
-import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@Proposal/README.md
+import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@main/README.md
 ```
 
-Um den Stand von `lia-coordinate` festzuhalten, kann der aktuell geprüfte
-Proposal-Stand stattdessen auf Commit
+Um den Stand von `lia-coordinate` festzuhalten, kann der bisher geprüfte
+Stand stattdessen auf Commit
 `1e1f7be4ea807c8360d10bf6b251a1272974212e` fixiert werden:
 
 ``` markdown
@@ -178,7 +178,7 @@ eigenen Dokumentkopf importieren:
 
 ``` markdown
 import: https://cdn.jsdelivr.net/gh/LiaTemplates/JSXGraph@main/README.md
-import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@Proposal/README.md
+import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-coordinate@main/README.md
 import: https://cdn.jsdelivr.net/gh/MINT-the-GAP/lia-pentominos@main/README.md
 ```
 
@@ -660,6 +660,13 @@ Die privaten Quizmakros erzeugen weiterhin das von LiaScript zu parsende
 Zuordnung zum Einzelstein beziehungsweise Dock und Abdeckungslogik liegen im
 TypeScript-Bundle. Auch Schalter, Panel, Listen und ARIA-Attribute des Docks
 erzeugt das Bundle aus dem schlanken `aside`-Marker.
+
+Für eigene Integrationen stehen außerdem
+`window.LiaPentomino.getDockPieces(boardId, dockMarkerId)` und
+`window.LiaPentomino.dockCoversSum(boardId, dockMarkerId, targetSum)` bereit.
+Die zweite Methode liefert `true`, sobald ein einzelner vollständig auf dem
+Feld liegender Stein des angegebenen Docks die Zielsumme bildet; mehrere
+Steine werden dabei nicht addiert.
 
 Das Bundle wartet auf das von `lia-coordinate` registrierte Board, baut
 Hunderterfeld und Steine idempotent auf und ersetzt sie bei einem
