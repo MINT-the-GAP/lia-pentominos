@@ -384,9 +384,11 @@ function ensureDockStyles(): void {
   const existing = document.getElementById(styleId) as HTMLStyleElement | null;
   const style = existing || document.createElement('style');
   style.id = styleId;
+  // Flex wrapping follows the embedding card, including resizes without a
+  // viewport change. lia-coordinate observes this constrained board wrapper.
   style.textContent =
-    '.lia-pentomino-workspace{--pentomino-board-size:520px;display:grid!important;' +
-    'grid-template-columns:var(--pentomino-board-size) minmax(4.4rem,35.4rem);' +
+    '.lia-pentomino-workspace{--pentomino-board-size:520px;display:flex!important;' +
+    'flex-wrap:wrap;' +
     'align-items:start;justify-content:center;gap:clamp(.75rem,2vw,1.35rem);' +
     'box-sizing:border-box;width:100%;' +
     'max-width:calc(var(--pentomino-board-size) + 36.75rem);' +
@@ -394,8 +396,8 @@ function ensureDockStyles(): void {
     '.lia-pentomino-workspace-board,.lia-pentomino-workspace-sidebar{' +
     'box-sizing:border-box;min-width:0}' +
     '.lia-pentomino-workspace-board{' +
-    'width:var(--pentomino-board-size);max-width:100%}' +
-    '.lia-pentomino-workspace-sidebar{width:100%;max-width:35.4rem}' +
+    'flex:0 1 var(--pentomino-board-size);width:var(--pentomino-board-size);max-width:100%}' +
+    '.lia-pentomino-workspace-sidebar{flex:1 1 35.4rem;width:100%;max-width:35.4rem}' +
     '.lia-pentomino-dock-keep{display:block;box-sizing:border-box;width:100%}' +
     '.lia-pentomino-dock{--pentomino-accent:rgb(var(--color-highlight,0,150,170));' +
     'display:flex;align-items:stretch;box-sizing:border-box;width:4.4rem;' +
@@ -437,7 +439,7 @@ function ensureDockStyles(): void {
     'border-radius:0 .6rem .6rem .6rem;background:rgb(var(--color-background,255,255,255));' +
     'box-shadow:0 .18rem .65rem rgba(0,0,0,.12)}' +
     '.lia-pentomino-dock-items{display:grid;' +
-    'grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:6rem;' +
+    'grid-template-columns:repeat(auto-fit,minmax(min(100%,max(6.4rem,64px)),1fr));grid-auto-rows:6rem;' +
     'gap:.3rem;padding:0}' +
     '.lia-pentomino-dock-item{display:flex!important;align-items:center;' +
     'justify-content:center;box-sizing:border-box;min-width:0!important;' +
@@ -481,15 +483,6 @@ function ensureDockStyles(): void {
     'border-color:rgba(var(--color-highlight,0,150,170),.72);' +
     'background:rgba(var(--color-highlight,0,150,170),.16);' +
     'box-shadow:inset 0 0 0 .12rem var(--pentomino-accent)}' +
-    '@media(max-width:70rem){.lia-pentomino-workspace{' +
-    'grid-template-columns:minmax(0,max(var(--pentomino-board-size),35.4rem));' +
-    'max-width:max(var(--pentomino-board-size),35.4rem)}' +
-    '.lia-pentomino-workspace-board{justify-self:center}' +
-    '.lia-pentomino-workspace-sidebar{max-width:35.4rem}' +
-    '.lia-pentomino-dock.is-expanded{width:min(35.4rem,100%)}}' +
-    '@media(max-width:34rem){.lia-pentomino-workspace{display:block!important}' +
-    '.lia-pentomino-workspace-sidebar{margin-top:.7rem}' +
-    '.lia-pentomino-dock.is-expanded{width:100%}}' +
     '@media(prefers-reduced-motion:reduce){.lia-pentomino-dock,' +
     '.lia-pentomino-dock-chevron{transition:none!important}}';
   if (!existing) (document.head || document.documentElement).appendChild(style);

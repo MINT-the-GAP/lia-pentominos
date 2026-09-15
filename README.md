@@ -236,15 +236,18 @@ name=X5-01;type=X5;numbers=[59,68,69,70,79]
           --{{0}}--
 
 `@PentominoDock` erzeugt ein vollständiges Hunderterfeld mit einem kompakten
-Inventar rechts daneben. Das Feld ist
-$520\,\text{px}\times520\,\text{px}$ groß. Wird der
-verfügbare Inhaltsbereich schmal, rutscht
-das Inventar automatisch unter das Feld. Der vertikale Reiter ist genauso hoch
-wie das Hunderterfeld; sein um 180° gedrehter Schriftzug **Pentominos** läuft
-von unten nach oben. Die Palette klappt nach rechts auf und ordnet alle 20
-Formen von `I2` bis `Z5` als größere farbige Vorschauen in einem 4×5-Raster an.
-Inventar und Reiter bleiben exakt feldhoch; erst zusätzliche Einträge unterhalb
-der Palette lassen das Panel scrollen. Ziehe eine Form in das Feld; auf Geräten
+Inventar. Das Feld ist bis zu $520\,\text{px}\times520\,\text{px}$ groß
+und passt sich der verfügbaren Kartenbreite an. Bei ausreichend Platz steht
+das Inventar rechts daneben, sonst darunter. Dieser Wechsel folgt der
+Inhaltsbreite auch dann, wenn sich nur die Aufgabenkarte und nicht das
+Browserfenster verändert.
+
+Der vertikale Reiter und das Inventarpanel sind 520 Pixel hoch. Sein
+um 180° gedrehter Schriftzug **Pentominos** läuft von unten nach oben.
+Die Palette klappt nach rechts auf und ordnet alle 20 Formen von `I2` bis `Z5`
+als farbige Vorschauen an: normalerweise in vier Spalten, in schmalen
+Containern in entsprechend weniger Spalten. Bei zusätzlichen Zeilen und
+Einträgen scrollt das Panel. Ziehe eine Form in das Feld; auf Geräten
 ohne bequeme Zeigerbedienung kann sie auch angetippt beziehungsweise angeklickt
 werden.
 

@@ -540,9 +540,9 @@ test('README keeps the main import, board flags and public standalone macros', a
   );
   assert.match(body, /(?:LiaPentomino|api)\.getDockPieces/);
   assert.match(body, /(?:LiaPentomino|api)\.dockCoversSum/);
-  assert.match(body, /Reiter ist genauso hoch\s+wie das Hunderterfeld/);
+  assert.match(body, /Reiter und das Inventarpanel sind 520 Pixel hoch/);
   assert.match(body, /um 180° gedrehter Schriftzug/);
-  assert.match(body, /4×5-Raster/);
+  assert.match(body, /normalerweise in vier Spalten, in schmalen/);
   assert.match(body, /Fixier- und Löschknöpfe gibt es dort nicht\s+mehr/);
   assert.match(body, /zurück auf den sichtbaren\s+Reiter oder in das geöffnete Inventar/);
   assert.match(body, /\*\*Entf\*\* beziehungsweise \*\*Delete\*\*/);

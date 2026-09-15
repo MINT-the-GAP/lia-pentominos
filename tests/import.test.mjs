@@ -922,11 +922,11 @@ name=L3-Test;type=L3;numbers=[11,21,22]
     assert.match(bundle, /checkQuiz/);
     assert.match(
       bundle,
-      /\.lia-pentomino-workspace\{--pentomino-board-size:520px;display:grid/
+      /\.lia-pentomino-workspace\{--pentomino-board-size:520px;display:flex/
     );
     assert.match(
       bundle,
-      /grid-template-columns:var\(--pentomino-board-size\) minmax\(4\.4rem,35\.4rem\)/
+      /flex-wrap:wrap/
     );
     assert.match(
       bundle,
@@ -973,7 +973,7 @@ name=L3-Test;type=L3;numbers=[11,21,22]
     );
     assert.match(
       bundle,
-      /\.lia-pentomino-dock-items\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/
+      /\.lia-pentomino-dock-items\{[^}]*grid-template-columns:repeat\(auto-fit,minmax\(min\(100%,max\(6\.4rem,64px\)\),1fr\)\)/
     );
     assert.match(
       bundle,

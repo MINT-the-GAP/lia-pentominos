@@ -406,11 +406,11 @@ test('renders an accessible Lia sidebar and removes selected Dock pieces', async
     const css = document.getElementById('lia-pentomino-dock-styles').textContent;
     assert.match(
       css,
-      /\.lia-pentomino-workspace\{--pentomino-board-size:520px;display:grid/
+      /\.lia-pentomino-workspace\{--pentomino-board-size:520px;display:flex/
     );
     assert.match(
       css,
-      /grid-template-columns:var\(--pentomino-board-size\) minmax\(4\.4rem,35\.4rem\)/
+      /flex-wrap:wrap/
     );
     assert.match(
       css,
@@ -475,14 +475,14 @@ test('renders an accessible Lia sidebar and removes selected Dock pieces', async
     assert.match(css, /\.lia-pentomino-dock-panel\{[^}]*overflow-y:auto/);
     assert.match(
       css,
-      /\.lia-pentomino-dock-items\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/
+      /\.lia-pentomino-dock-items\{[^}]*grid-template-columns:repeat\(auto-fit,minmax\(min\(100%,max\(6\.4rem,64px\)\),1fr\)\)/
     );
     assert.match(css, /\.lia-pentomino-dock-items\{[^}]*grid-auto-rows:6rem/);
     assert.match(css, /\.lia-pentomino-dock-item\{[^}]*height:6rem/);
     assert.match(css, /\.lia-pentomino-dock-item\{[^}]*touch-action:pan-y/);
     assert.match(css, /\.lia-pentomino-dock\.is-return-target/);
     assert.doesNotMatch(css, /lia-pentomino-dock-(?:fix|delete|actions)/);
-    assert.match(css, /@media\(max-width:70rem\)/);
+    assert.doesNotMatch(css, /@media\(max-width:/);
     assert.match(css, /\.lia-pentomino-dock-panel\[hidden\]/);
     assert.match(css, /rgb\(var\(--color-highlight/);
 
